@@ -10,11 +10,13 @@ CONFIG += c++11
 
 SOURCES += \
     fieldview.cpp \
+    fieldviewitem.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     fieldview.h \
+    fieldviewitem.h \
     mainwindow.h
 
 FORMS += \

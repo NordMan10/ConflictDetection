@@ -4,6 +4,8 @@ FieldView::FieldView()
 {
     standardOptions();
     initViewElements();
+
+    addElementsToScene();
 }
 
 void FieldView::standardOptions() {
@@ -33,8 +35,15 @@ void FieldView::standardOptions() {
 }
 
 void FieldView::initViewElements() {
+    m_fvItem = new FieldViewItem();
+    m_fvItem->setPos(50, 50);
+    m_fvItem->setGeometry(100, 100);
 }
 
 void FieldView::addElementsToScene() {
+    m_Scene.addItem(m_fvItem);
+}
 
+FieldView::~FieldView() {
+    delete m_fvItem;
 }

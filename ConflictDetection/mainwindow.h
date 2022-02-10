@@ -29,7 +29,7 @@ public:
 private:
     Ui::MainWindow *ui;
 
-    FieldView *fw;
+    FieldView *fv;
 
     QFrame *m_Frame;
 

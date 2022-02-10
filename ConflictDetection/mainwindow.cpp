@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     standardOptions();
 
-    fw = new FieldView();
+    fv = new FieldView();
 
     initViewElements();
 
@@ -51,7 +51,7 @@ void MainWindow::initViewElements() {
     m_Stopwatch->setFont(QFont("Roboto", 16));
     ui->topGrid->addWidget(m_Stopwatch, 0, 4);
 
-    ui->bottomGrid->addWidget(fw, 0, 0, Qt::AlignJustify);
+    ui->bottomGrid->addWidget(fv, 0, 0, Qt::AlignJustify);
 
 //    m_Frame = new QFrame();
 //    ui->bottomGrid->addWidget(m_Frame);
@@ -63,6 +63,11 @@ void MainWindow::initViewElements() {
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete fw;
+    delete fv;
+    delete m_StartStopBtn;
+    delete m_PauseContinueBtn;
+    delete m_Stopwatch;
+    delete m_SpacerHorTop1;
+    delete m_SpacerHorTop2;
 }
 
