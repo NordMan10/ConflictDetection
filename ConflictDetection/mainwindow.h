@@ -9,6 +9,8 @@
 #include <QGridLayout>
 #include <QSpacerItem>
 #include <QDebug>
+#include <QFont>
+#include <QFrame>
 
 #include "fieldview.h"
 
@@ -29,9 +31,7 @@ private:
 
     FieldView *fw;
 
-    QGridLayout *m_MainGrid;
-    QGridLayout *m_TopGrid;
-    QGridLayout *m_BottomGrid;
+    QFrame *m_Frame;
 
     QPushButton *m_StartStopBtn;
     QPushButton *m_PauseContinueBtn;

@@ -15,16 +15,17 @@ void FieldView::standardOptions() {
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     setWindowTitle("FieldView");
-    setFrameStyle(0);
+    setFrameStyle(3);
 
     //setWindowState(Qt::WindowMaximized);
 
-    //resize(QDesktopWidget().availableGeometry(this).size());
-    setSceneRect(0, 0, this->size().width(), this->size().height());
+    resize(QDesktopWidget().availableGeometry(this).size());
+    setSceneRect(0, 0, width(), height());
     setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
     //setFixedSize(this->size().width(), this->size().height());
 
-    setBackgroundBrush(QBrush(Qt::red));
+    //setBackgroundBrush(QBrush(Qt::red));
+
 
     m_Scene.setItemIndexMethod(QGraphicsScene::NoIndex);
 
