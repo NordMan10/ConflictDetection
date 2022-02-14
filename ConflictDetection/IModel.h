@@ -1,10 +1,10 @@
 #ifndef IMODEL_H
 #define IMODEL_H
 
-class Model
+class IModel
 {
 public:
-    virtual ~Model(){};
+    virtual ~IModel(){};
 
 
 };

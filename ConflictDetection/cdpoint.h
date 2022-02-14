@@ -11,17 +11,26 @@ enum CDPointType {
 class CDPoint
 {
 public:
-    CDPoint();
+    CDPoint(int id, int x, int y, CDPointType type);
 
-public:
-    int id;
+    static int getNextId();
 
-    int x;
-    int y;
+    int getId();
 
-    CDPointType type;
+    int x();
+    int y();
 
-    static int pointCount;
+    CDPointType getType();
+
+private:
+    int m_Id;
+
+    int m_X;
+    int m_Y;
+
+    CDPointType m_Type;
+
+    static int ms_PointCount;
 };
 
 #endif // CDPOINT_H
