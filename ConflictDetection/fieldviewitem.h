@@ -4,6 +4,7 @@
 #include <QGraphicsItem>
 #include <QPainter>
 #include <QPen>
+#include <QPolygon>
 
 class FieldViewItem : public QGraphicsItem
 {

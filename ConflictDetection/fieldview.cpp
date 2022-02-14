@@ -9,6 +9,9 @@ FieldView::FieldView()
 }
 
 void FieldView::standardOptions() {
+    m_Width = 1920;
+    m_Height = 900;
+
     setRenderHint(QPainter::Antialiasing);
     setCacheMode(QGraphicsView::CacheNone);
 
@@ -21,8 +24,9 @@ void FieldView::standardOptions() {
 
     //setWindowState(Qt::WindowMaximized);
 
-    resize(QDesktopWidget().availableGeometry(this).size());
-    setSceneRect(0, 0, width(), height());
+    //resize(QDesktopWidget().availableGeometry(this).size());
+    //qDebug() << width() << ", " << height();
+    setSceneRect(0, 0, m_Width, m_Height);
     setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
     //setFixedSize(this->size().width(), this->size().height());
 
@@ -36,8 +40,9 @@ void FieldView::standardOptions() {
 
 void FieldView::initViewElements() {
     m_fvItem = new FieldViewItem();
-    m_fvItem->setPos(50, 50);
-    m_fvItem->setGeometry(100, 100);
+    m_fvItem->setPos(240, 45);
+    qDebug() << width() << height();
+    m_fvItem->setGeometry(1440, 810);
 }
 
 void FieldView::addElementsToScene() {
@@ -45,5 +50,5 @@ void FieldView::addElementsToScene() {
 }
 
 FieldView::~FieldView() {
-    delete m_fvItem;
+    //delete m_fvItem;
 }

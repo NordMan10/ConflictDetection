@@ -4,6 +4,8 @@
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QDesktopWidget>
+#include <QGraphicsItem>
+#include <QDebug>
 
 #include "fieldviewitem.h"
 

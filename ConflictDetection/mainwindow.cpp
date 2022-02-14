@@ -17,14 +17,20 @@ MainWindow::MainWindow(QWidget *parent) :
 void MainWindow::standardOptions() {
     setWindowState(Qt::WindowMaximized);
 
-    //resize(QDesktopWidget().availableGeometry(this).size());
+    resize(QDesktopWidget().availableGeometry(this).size());
+    //qDebug() << width() << height();
 }
 
 void MainWindow::initViewElements() {
     //qDebug() << width() << ", " << height();
     //ui->mainGrid->setGeometry(QRect(0, 0, width(), height()));
-//    ui->mainGrid->setRowStretch(0, 1);
-//    ui->mainGrid->setRowStretch(1, 4);
+    //ui->MainWindow::centralwidget->setWid
+
+    ui->mainGrid->setRowStretch(0, 1);
+    ui->mainGrid->setRowStretch(1, 4);
+
+
+    //qDebug() << ui->mainGrid->geometry().width() << ui->mainGrid->geometry().height();
 
     ui->topGrid->setMargin(30);
     ui->topGrid->setColumnStretch(0, 1);
@@ -50,12 +56,14 @@ void MainWindow::initViewElements() {
     ui->topGrid->addWidget(m_Stopwatch, 0, 4);
 
     fv = new FieldView();
-    ui->bottomGrid->addWidget(fv, 0, 0, Qt::AlignJustify);
+    ui->bottomGrid->addWidget(fv, 0, 0/*, Qt::AlignJustify*/);
+    //qDebug() << ui->bottomGrid->cellRect(0, 0).width() << ui->bottomGrid->cellRect(0, 0).height();
 
 //    m_Frame = new QFrame();
 //    ui->bottomGrid->addWidget(m_Frame);
 //    m_Frame->setFrameRect(QRect(100, 100, 100, 50));
 //    m_Frame->setLineWidth(5);
+
 
 }
 
@@ -66,7 +74,9 @@ MainWindow::~MainWindow()
     delete m_StartStopBtn;
     delete m_PauseContinueBtn;
     delete m_Stopwatch;
-    delete m_SpacerHorTop1;
-    delete m_SpacerHorTop2;
+
+    // По идее их нужно удалять, но тогда после закрытия окна программа крашится
+    //delete m_SpacerHorTop1;
+    //delete m_SpacerHorTop2;
 }
 

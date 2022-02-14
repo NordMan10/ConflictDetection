@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1920</width>
-    <height>1030</height>
+    <width>800</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,10 +15,13 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="sizeConstraint">
+     <enum>QLayout::SetMaximumSize</enum>
+    </property>
     <item>
      <layout class="QGridLayout" name="mainGrid" rowstretch="1,5" rowminimumheight="0,0">
       <property name="sizeConstraint">
-       <enum>QLayout::SetNoConstraint</enum>
+       <enum>QLayout::SetMaximumSize</enum>
       </property>
       <item row="0" column="0">
        <layout class="QGridLayout" name="topGrid" rowstretch="0" columnstretch="0">
@@ -28,7 +31,11 @@
        </layout>
       </item>
       <item row="1" column="0">
-       <layout class="QGridLayout" name="bottomGrid"/>
+       <layout class="QGridLayout" name="bottomGrid">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetMaximumSize</enum>
+        </property>
+       </layout>
       </item>
      </layout>
     </item>
@@ -39,7 +46,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1920</width>
+     <width>800</width>
      <height>25</height>
     </rect>
    </property>
