@@ -9,6 +9,7 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    cdpoint.cpp \
     controller.cpp \
     fieldview.cpp \
     fieldviewitem.cpp \
@@ -19,6 +20,7 @@ SOURCES += \
 HEADERS += \
     IController.h \
     IModel.h \
+    cdpoint.h \
     controller.h \
     fieldview.h \
     fieldviewitem.h \
