@@ -24,6 +24,13 @@ void FieldViewItem::paint(QPainter *painter, const QStyleOptionGraphicsItem */*o
     painter->restore();
 
     painter->drawPolygon(QPolygon({QPoint(500, 300), QPoint(505, 290), QPoint(510, 300)}));
+
+    QPoint points[3] {QPoint(200, 700), QPoint(300, 750), QPoint(350, 100)};
+//    for (int i = 0; i < (sizeof(points) / sizeof(QPoint)) - 1; i++)
+//        painter->drawLine(points[i].x(), points[i].y(), points[i + 1].x(), points[i + 1].y());
+
+    QVector<QPoint> pointsV = {QPoint(200, 700), QPoint(300, 750), QPoint(300, 750), QPoint(350, 100)};
+    painter->drawLines(pointsV);
 }
 
 void FieldViewItem::setGeometry(int aWidth, int aHeight) {

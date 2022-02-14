@@ -12,7 +12,10 @@
 #include <QFont>
 #include <QFrame>
 
+#include "model.h"
+#include "controller.h"
 #include "fieldview.h"
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -31,7 +34,8 @@ private:
 
     FieldView *fv;
 
-    QFrame *m_Frame;
+    Model *m_Model;
+    Controller *m_Controller;
 
     QPushButton *m_StartStopBtn;
     QPushButton *m_PauseContinueBtn;
