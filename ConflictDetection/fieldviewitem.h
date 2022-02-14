@@ -3,6 +3,7 @@
 
 #include <QGraphicsItem>
 #include <QPainter>
+#include <QPen>
 
 class FieldViewItem : public QGraphicsItem
 {

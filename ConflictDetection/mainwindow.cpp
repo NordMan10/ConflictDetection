@@ -9,8 +9,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     standardOptions();
 
-    fv = new FieldView();
-
     initViewElements();
 
 
@@ -29,9 +27,9 @@ void MainWindow::initViewElements() {
 //    ui->mainGrid->setRowStretch(1, 4);
 
     ui->topGrid->setMargin(30);
-    ui->topGrid->setColumnStretch(0, 2);
+    ui->topGrid->setColumnStretch(0, 1);
     ui->topGrid->setColumnStretch(1, 0);
-    ui->topGrid->setColumnStretch(2, 2);
+    ui->topGrid->setColumnStretch(2, 1);
     ui->topGrid->setColumnStretch(3, 10);
     ui->topGrid->setColumnStretch(4, 2);
 
@@ -51,6 +49,7 @@ void MainWindow::initViewElements() {
     m_Stopwatch->setFont(QFont("Roboto", 16));
     ui->topGrid->addWidget(m_Stopwatch, 0, 4);
 
+    fv = new FieldView();
     ui->bottomGrid->addWidget(fv, 0, 0, Qt::AlignJustify);
 
 //    m_Frame = new QFrame();
