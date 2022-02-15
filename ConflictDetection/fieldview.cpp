@@ -1,6 +1,7 @@
 #include "fieldview.h"
 
-FieldView::FieldView()
+FieldView::FieldView(FieldPoints &fieldPoints) :
+    m_FieldPoints(fieldPoints)
 {
     m_PosX = 240;
     m_PosY = 45;
@@ -29,7 +30,7 @@ void FieldView::standardOptions() {
 
     //resize(QDesktopWidget().availableGeometry(this).size());
     //qDebug() << width() << ", " << height();
-    setSceneRect(0, 0, m_Width, m_Height);
+    setSceneRect(0, 0, 1440, 810);
     setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
     //setFixedSize(this->size().width(), this->size().height());
 
@@ -42,14 +43,15 @@ void FieldView::standardOptions() {
 }
 
 void FieldView::initViewElements() {
-    m_fvItem = new FieldViewItem();
-    m_fvItem->setPos(m_PosX, m_PosY);
-    qDebug() << width() << height();
-    m_fvItem->setGeometry(m_Width, m_Height);
+    m_fvItem = new FieldViewItem(m_FieldPoints);
+    m_fvItem->setPos(0, 0);
+    //qDebug() << width() << height();
+    m_fvItem->setGeometry(1440, 810);
 }
 
 void FieldView::addElementsToScene() {
     m_Scene.addItem(m_fvItem);
+    //m_Scene.
 }
 
 int FieldView::getWidth() const {

@@ -4,15 +4,18 @@
 #include <vector>
 
 #include "cdpoint.h"
+#include "fieldpoints.h"
 
 class IModel
 {
 public:
     virtual ~IModel(){};
 
-    virtual std::vector<CDPoint> getZonePoints() const = 0;
-    virtual std::vector<CDPoint> getPathPoints() const = 0;
-    virtual std::vector<CDPoint> getPathIntersectionPoints() const = 0;
+    virtual std::vector<CDPoint>& getZonePoints() = 0;
+    virtual std::vector<CDPoint>& getPathPoints() = 0;
+    virtual std::vector<CDPoint>& getPathIntersectionPoints() = 0;
+
+    virtual FieldPoints& getFieldPoints() = 0;
 
 };
 

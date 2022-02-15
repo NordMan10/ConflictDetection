@@ -3,7 +3,9 @@
 int Convert::s_FieldWidth = 1440;
 int Convert::s_FieldHeight = 810;
 
-int Convert::s_RightFieldBorder = 420000;
+int Convert::s_RightFieldBorder = 440000;
+
+int Convert::m_YShift = 100;
 
 int Convert::s_MetersInPixel = (int) std::round(s_RightFieldBorder / s_FieldWidth);
 
@@ -12,5 +14,6 @@ int Convert::ConvertMetersToPixels(int meters) {
 }
 
 std::tuple<int, int> Convert::TransformCoordsFromSchemeToProgram(int z, int x) {
-    return std::make_tuple(ConvertMetersToPixels(z), ConvertMetersToPixels(x));
+    //qDebug() << ConvertMetersToPixels(z) << ConvertMetersToPixels(x);
+    return std::make_tuple(ConvertMetersToPixels(z), ConvertMetersToPixels(x) + m_YShift);
 }

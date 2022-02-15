@@ -6,7 +6,7 @@ CDPoint::CDPoint(int id, int x, int y, CDPointType type, bool rawCoords)
     m_Type = type;
 
     if (rawCoords) {
-        auto coords = Convert::TransformCoordsFromSchemeToProgram(y, x);
+        auto coords = Convert::TransformCoordsFromSchemeToProgram(x, y);
         m_X = std::get<0>(coords);
         m_Y = std::get<1>(coords);
     }

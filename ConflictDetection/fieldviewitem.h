@@ -6,10 +6,13 @@
 #include <QPen>
 #include <QPolygon>
 
+#include "cdpoint.h"
+#include "fieldpoints.h"
+
 class FieldViewItem : public QGraphicsItem
 {
 public:
-    FieldViewItem();
+    FieldViewItem(FieldPoints &fieldPoints);
 
     QRectF boundingRect() const override;
 
@@ -17,11 +20,20 @@ public:
 
     void setGeometry(int aWidth, int aHeight);
 
-    void drawZonePoints(std::vector<QPoint> points);
+    //void drawZonePoints(std::vector<QPoint> points);
+
+private:
+    void drawZonePoints(QPainter *painter);
+    void drawZoneLines(QPainter *painter);
+
+    void drawPathPoints(QPainter *painter);
+    void drawPathLines(QPainter *painter);
 
 private:
     int m_Width = 100;
     int m_Height = 100;
+
+    FieldPoints &m_FieldPoints;
 };
 
 #endif // FIELDVIEWITEM_H

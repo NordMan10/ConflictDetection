@@ -12,6 +12,7 @@ SOURCES += \
     cdpoint.cpp \
     controller.cpp \
     convert.cpp \
+    fieldpoints.cpp \
     fieldview.cpp \
     fieldviewitem.cpp \
     main.cpp \
@@ -24,6 +25,7 @@ HEADERS += \
     cdpoint.h \
     controller.h \
     convert.h \
+    fieldpoints.h \
     fieldview.h \
     fieldviewitem.h \
     mainwindow.h \

@@ -10,11 +10,12 @@
 #include "fieldviewitem.h"
 #include "convert.h"
 #include "cdpoint.h"
+#include "fieldpoints.h"
 
 class FieldView : public QGraphicsView
 {
 public:
-    FieldView();
+    FieldView(FieldPoints &fieldPoints);
     //FieldView(int width, int height);
     ~FieldView();
 
@@ -33,6 +34,8 @@ private:
     int m_Height;
 
     FieldViewItem *m_fvItem;
+
+    FieldPoints &m_FieldPoints;
 
 private:
     void initViewElements();

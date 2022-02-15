@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <tuple>
+#include <QDebug>
 
 class Convert
 {
@@ -22,6 +23,10 @@ public:
     static int s_FieldHeight;
 
     static int s_RightFieldBorder;
+
+    // Сдвиг по вертикальной оси в пикселях
+    static int m_YShift;
+
 };
 
 #endif // CONVERT_H

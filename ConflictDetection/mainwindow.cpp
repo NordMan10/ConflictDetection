@@ -57,7 +57,7 @@ void MainWindow::initViewElements() {
     m_Stopwatch->setFont(QFont("Roboto", 16));
     ui->topGrid->addWidget(m_Stopwatch, 0, 4);
 
-    fv = new FieldView();
+    fv = new FieldView(m_Model.getFieldPoints());
     m_FieldWidth = fv->getWidth();
     m_FieldHeight = fv->getHeight();
     ui->bottomGrid->addWidget(fv, 0, 0/*, Qt::AlignJustify*/);
