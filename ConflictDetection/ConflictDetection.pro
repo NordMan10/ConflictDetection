@@ -11,6 +11,7 @@ CONFIG += c++11
 SOURCES += \
     cdpoint.cpp \
     controller.cpp \
+    convert.cpp \
     fieldview.cpp \
     fieldviewitem.cpp \
     main.cpp \
@@ -22,6 +23,7 @@ HEADERS += \
     IModel.h \
     cdpoint.h \
     controller.h \
+    convert.h \
     fieldview.h \
     fieldviewitem.h \
     mainwindow.h \

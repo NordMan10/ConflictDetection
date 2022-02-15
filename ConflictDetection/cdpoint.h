@@ -1,6 +1,7 @@
 #ifndef CDPOINT_H
 #define CDPOINT_H
 
+#include "convert.h"
 
 enum CDPointType {
     ZONE,
@@ -11,7 +12,7 @@ enum CDPointType {
 class CDPoint
 {
 public:
-    CDPoint(int id, int x, int y, CDPointType type);
+    CDPoint(int id, int x, int y, CDPointType type, bool rawCoords = true);
 
     static int getNextId();
 
@@ -28,6 +29,7 @@ private:
     int m_X;
     int m_Y;
 
+    std::tuple<int> t;
     CDPointType m_Type;
 
     static int ms_PointCount;

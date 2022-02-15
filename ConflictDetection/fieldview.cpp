@@ -2,6 +2,12 @@
 
 FieldView::FieldView()
 {
+    m_PosX = 240;
+    m_PosY = 45;
+
+    m_Width = Convert::s_FieldWidth;
+    m_Height = Convert::s_FieldHeight;
+
     standardOptions();
     initViewElements();
 
@@ -9,9 +15,6 @@ FieldView::FieldView()
 }
 
 void FieldView::standardOptions() {
-    m_Width = 1920;
-    m_Height = 900;
-
     setRenderHint(QPainter::Antialiasing);
     setCacheMode(QGraphicsView::CacheNone);
 
@@ -40,15 +43,27 @@ void FieldView::standardOptions() {
 
 void FieldView::initViewElements() {
     m_fvItem = new FieldViewItem();
-    m_fvItem->setPos(240, 45);
+    m_fvItem->setPos(m_PosX, m_PosY);
     qDebug() << width() << height();
-    m_fvItem->setGeometry(1440, 810);
+    m_fvItem->setGeometry(m_Width, m_Height);
 }
 
 void FieldView::addElementsToScene() {
     m_Scene.addItem(m_fvItem);
 }
 
+int FieldView::getWidth() const {
+    return m_Width;
+}
+
+int FieldView::getHeight() const {
+    return m_Height;
+}
+
+void FieldView::drawStaticGraphics(std::vector<CDPoint> zonePoints) {
+
+}
+
 FieldView::~FieldView() {
-    //delete m_fvItem;
+    delete m_fvItem;
 }

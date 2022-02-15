@@ -17,6 +17,8 @@ public:
 
     void setGeometry(int aWidth, int aHeight);
 
+    void drawZonePoints(std::vector<QPoint> points);
+
 private:
     int m_Width = 100;
     int m_Height = 100;

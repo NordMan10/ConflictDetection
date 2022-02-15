@@ -19,6 +19,13 @@ public:
     std::vector<CDPoint> getPathIntersectionPoints() const override;
 
 private:
+    void initPoints();
+
+    void initZonePoints();
+    void initPathPoints();
+    void initPathIntersectionPoints();
+
+private:
     std::vector<CDPoint> m_ZonePoints;
     std::vector<CDPoint> m_PathPoints;
     std::vector<CDPoint> m_PathIntersectionPoints;

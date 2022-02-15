@@ -1,17 +1,20 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
+#include <memory>
+
 #include "IController.h"
 #include "IModel.h"
 
 class Controller : public IController
 {
 private:
-    IModel *m_Model;
+    IModel &m_Model;
+    //MainWindow &m_View;
 
 public:
-    Controller(IModel model);
-
+    Controller(IModel &model);
+    ~Controller();
 
     std::vector<CDPoint> getZonePoints() const override;
     std::vector<CDPoint> getPathPoints() const override;

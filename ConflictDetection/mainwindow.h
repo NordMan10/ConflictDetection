@@ -26,7 +26,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(IModel &model, IController &controller, QWidget *parent = 0);
     ~MainWindow();
 
 private:
@@ -34,8 +34,8 @@ private:
 
     FieldView *fv;
 
-    Model *m_Model;
-    Controller *m_Controller;
+    IModel &m_Model;
+    IController &m_Controller;
 
     QPushButton *m_StartStopBtn;
     QPushButton *m_PauseContinueBtn;
@@ -48,6 +48,12 @@ private:
 private:
     void initViewElements();
     void standardOptions();
+
+    void drawStaticGraphics(std::vector<CDPoint> zonePoints);
+
+private:
+    int m_FieldWidth;
+    int m_FieldHeight;
 };
 
 #endif // MAINWINDOW_H

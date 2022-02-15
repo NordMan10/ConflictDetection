@@ -1,9 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(IModel &model, IController &controller, QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    m_Model(model),
+    m_Controller(controller)
 {
     ui->setupUi(this);
 
@@ -11,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     initViewElements();
 
-
+    drawStaticGraphics(m_Controller.getZonePoints());
 }
 
 void MainWindow::standardOptions() {
@@ -56,14 +58,13 @@ void MainWindow::initViewElements() {
     ui->topGrid->addWidget(m_Stopwatch, 0, 4);
 
     fv = new FieldView();
+    m_FieldWidth = fv->getWidth();
+    m_FieldHeight = fv->getHeight();
     ui->bottomGrid->addWidget(fv, 0, 0/*, Qt::AlignJustify*/);
     //qDebug() << ui->bottomGrid->cellRect(0, 0).width() << ui->bottomGrid->cellRect(0, 0).height();
+}
 
-//    m_Frame = new QFrame();
-//    ui->bottomGrid->addWidget(m_Frame);
-//    m_Frame->setFrameRect(QRect(100, 100, 100, 50));
-//    m_Frame->setLineWidth(5);
-
+void MainWindow::drawStaticGraphics(std::vector<CDPoint> zonePoints) {
 
 }
 

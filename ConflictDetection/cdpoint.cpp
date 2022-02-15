@@ -1,11 +1,19 @@
 #include "cdpoint.h"
 
-CDPoint::CDPoint(int id, int x, int y, CDPointType type)
+CDPoint::CDPoint(int id, int x, int y, CDPointType type, bool rawCoords)
 {
     m_Id = id;
-    m_X = x;
-    m_Y = y;
     m_Type = type;
+
+    if (rawCoords) {
+        auto coords = Convert::TransformCoordsFromSchemeToProgram(y, x);
+        m_X = std::get<0>(coords);
+        m_Y = std::get<1>(coords);
+    }
+    else {
+        m_X = x;
+        m_Y = y;
+    }
 }
 
 int CDPoint::ms_PointCount = 0;

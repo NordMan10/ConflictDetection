@@ -8,6 +8,8 @@
 #include <QDebug>
 
 #include "fieldviewitem.h"
+#include "convert.h"
+#include "cdpoint.h"
 
 class FieldView : public QGraphicsView
 {
@@ -16,8 +18,16 @@ public:
     //FieldView(int width, int height);
     ~FieldView();
 
+    int getWidth() const;
+    int getHeight() const;
+
+    void drawStaticGraphics(std::vector<CDPoint> zonePoints);
+
 private:
     QGraphicsScene m_Scene;
+
+    int m_PosX;
+    int m_PosY;
 
     int m_Width;
     int m_Height;
