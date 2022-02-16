@@ -13,7 +13,12 @@ MainWindow::MainWindow(IModel &model, IController &controller, QWidget *parent) 
 
     initViewElements();
 
-    drawStaticGraphics(m_Controller.getZonePoints());
+    //drawStaticGraphics(m_Controller.getZonePoints());
+
+    connect(m_TimerStopwatch, SIGNAL(timeout()), this, SLOT(slotTimerStopwatchTick()));
+
+    connect(m_StartStopBtn, SIGNAL(clicked()), this, SLOT(start()));
+    connect(m_PauseContinueBtn, SIGNAL(clicked()), this, SLOT(pause()));
 }
 
 void MainWindow::standardOptions() {
@@ -30,7 +35,6 @@ void MainWindow::initViewElements() {
 
     ui->mainGrid->setRowStretch(0, 1);
     ui->mainGrid->setRowStretch(1, 4);
-
 
     //qDebug() << ui->mainGrid->geometry().width() << ui->mainGrid->geometry().height();
 
@@ -57,25 +61,72 @@ void MainWindow::initViewElements() {
     m_Stopwatch->setFont(QFont("Roboto", 16));
     ui->topGrid->addWidget(m_Stopwatch, 0, 4);
 
-    fv = new FieldView(m_Model.getFieldPoints());
+    fv = new FieldView(m_Model.getFieldPoints(), m_Model.getPaths());
     m_FieldWidth = fv->getWidth();
     m_FieldHeight = fv->getHeight();
     ui->bottomGrid->addWidget(fv, 0, 0/*, Qt::AlignJustify*/);
     //qDebug() << ui->bottomGrid->cellRect(0, 0).width() << ui->bottomGrid->cellRect(0, 0).height();
+
+    m_TimerStopwatch = new QTimer();
 }
 
-void MainWindow::drawStaticGraphics(std::vector<CDPoint> zonePoints) {
+void MainWindow::slotTimerStopwatchTick() {
+    m_Controller.updateStopwatchValue(m_StopwatchTickValue);
+    m_Stopwatch->setText(QTime::fromMSecsSinceStartOfDay(m_Controller.getStopwatchValue()).toString());
+    //m_Stopwatch->setText(QTime::currentTime().toString("hh:mm:ss"));
+}
 
+void MainWindow::start() {
+    m_TimerStopwatch->start(m_StopwatchTickValue);
+    m_StartStopBtn->setText("Stop");
+    connect(m_StartStopBtn, SIGNAL(clicked()), this, SLOT(stop()));
+
+    m_Controller.start();
+}
+
+void MainWindow::stop() {
+    m_TimerStopwatch->stop();
+    m_StartStopBtn->setText("Start");
+    connect(m_StartStopBtn, SIGNAL(clicked()), this, SLOT(start()));
+
+    m_Controller.setStopwatchValue(0);
+    m_Stopwatch->setText("00:00:00");
+
+    m_PauseContinueBtn->setText("Pause");
+    connect(m_PauseContinueBtn, SIGNAL(clicked()), this, SLOT(pause()));
+
+    m_Controller.stop();
+}
+
+void MainWindow::pause() {
+    if (m_TimerStopwatch->isActive()) {
+        m_TimerStopwatch->stop();
+        m_PauseContinueBtn->setText("Continue");
+        connect(m_PauseContinueBtn, SIGNAL(clicked()), this, SLOT(continueWork()));
+
+        m_Controller.pause();
+    }
+}
+
+void MainWindow::continueWork() {
+    m_TimerStopwatch->start();
+    m_PauseContinueBtn->setText("Pause");
+    connect(m_PauseContinueBtn, SIGNAL(clicked()), this, SLOT(pause()));
+
+    m_Controller.continueWork();
 }
 
 MainWindow::~MainWindow()
 {
+    // В теории этого делать не нужно, поскольку с закрытием главного окна завершается работа
+    // приложения, а значит и освобождается вся память.
     delete ui;
     delete fv;
     delete m_StartStopBtn;
     delete m_PauseContinueBtn;
     delete m_Stopwatch;
 
+    delete m_TimerStopwatch;
     // По идее их нужно удалять, но тогда после закрытия окна программа крашится
     //delete m_SpacerHorTop1;
     //delete m_SpacerHorTop2;

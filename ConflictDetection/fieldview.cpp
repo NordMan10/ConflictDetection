@@ -1,7 +1,8 @@
 #include "fieldview.h"
 
-FieldView::FieldView(FieldPoints &fieldPoints) :
-    m_FieldPoints(fieldPoints)
+FieldView::FieldView(FieldPoints &fieldPoints, std::vector<std::vector<CDPoint>>& paths) :
+    m_FieldPoints(fieldPoints),
+    m_Paths(paths)
 {
     m_PosX = 240;
     m_PosY = 45;
@@ -43,7 +44,7 @@ void FieldView::standardOptions() {
 }
 
 void FieldView::initViewElements() {
-    m_fvItem = new FieldViewItem(m_FieldPoints);
+    m_fvItem = new FieldViewItem(m_FieldPoints, m_Paths);
     m_fvItem->setPos(0, 0);
     //qDebug() << width() << height();
     m_fvItem->setGeometry(1440, 810);

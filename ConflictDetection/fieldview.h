@@ -15,7 +15,7 @@
 class FieldView : public QGraphicsView
 {
 public:
-    FieldView(FieldPoints &fieldPoints);
+    FieldView(FieldPoints &fieldPoints, std::vector<std::vector<CDPoint>>& paths);
     //FieldView(int width, int height);
     ~FieldView();
 
@@ -33,9 +33,11 @@ private:
     int m_Width;
     int m_Height;
 
-    FieldViewItem *m_fvItem;
+    FieldViewItem* m_fvItem;
 
-    FieldPoints &m_FieldPoints;
+    FieldPoints& m_FieldPoints;
+
+    std::vector<std::vector<CDPoint>>& m_Paths;
 
 private:
     void initViewElements();

@@ -11,6 +11,8 @@
 #include <QDebug>
 #include <QFont>
 #include <QFrame>
+#include <QTimer>
+#include <QTime>
 
 #include "model.h"
 #include "controller.h"
@@ -45,11 +47,20 @@ private:
 
     QLabel *m_Stopwatch;
 
+    QTimer* m_TimerStopwatch;
+    int m_StopwatchTickValue = 1000;
+
+private slots:
+    void slotTimerStopwatchTick();
+
+    void start();
+    void stop();
+    void pause();
+    void continueWork();
+
 private:
     void initViewElements();
     void standardOptions();
-
-    void drawStaticGraphics(std::vector<CDPoint> zonePoints);
 
 private:
     int m_FieldWidth;

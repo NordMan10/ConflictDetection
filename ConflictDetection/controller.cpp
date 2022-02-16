@@ -36,3 +36,15 @@ void Controller::pause() {
 void Controller::continueWork() {
 
 }
+
+long long Controller::getStopwatchValue() {
+    return m_Model.getStopwatchValue();
+}
+
+void Controller::updateStopwatchValue(int value) {
+    m_Model.updateStopwatchValue(value);
+}
+
+void Controller::setStopwatchValue(int value) {
+    m_Model.setStopwatchValue(value);
+}

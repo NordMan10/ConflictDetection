@@ -21,6 +21,9 @@ public:
     // Не названа как "continue", потому что слово зарезервировано.
     virtual void continueWork() = 0;
 
+    virtual long long getStopwatchValue() = 0;
+    virtual void updateStopwatchValue(int value) = 0;
+    virtual void setStopwatchValue(int value) = 0;
 };
 
 #endif // ICONTROLLER_H

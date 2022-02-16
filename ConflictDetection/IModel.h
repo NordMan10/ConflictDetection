@@ -17,6 +17,11 @@ public:
 
     virtual FieldPoints& getFieldPoints() = 0;
 
+    virtual std::vector<std::vector<CDPoint>>& getPaths() = 0;
+
+    virtual long long getStopwatchValue() = 0;
+    virtual void updateStopwatchValue(int value) = 0;
+    virtual void setStopwatchValue(int value) = 0;
 };
 
 #endif // IMODEL_H

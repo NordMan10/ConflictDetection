@@ -26,6 +26,10 @@ public:
     void pause() override;
     // Не названа как "continue", потому что слово зарезервировано.
     void continueWork() override;
+
+    long long getStopwatchValue() override;
+    void updateStopwatchValue(int value) override;
+    void setStopwatchValue(int value) override;
 };
 
 #endif // CONTROLLER_H
