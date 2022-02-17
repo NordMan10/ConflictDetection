@@ -79,6 +79,7 @@ void MainWindow::slotTimerStopwatchTick() {
 void MainWindow::start() {
     m_TimerStopwatch->start(m_StopwatchTickValue);
     m_StartStopBtn->setText("Stop");
+    disconnect(m_StartStopBtn, SIGNAL(clicked()), this, SLOT(start()));
     connect(m_StartStopBtn, SIGNAL(clicked()), this, SLOT(stop()));
 
     m_Controller.start();
@@ -87,13 +88,17 @@ void MainWindow::start() {
 void MainWindow::stop() {
     m_TimerStopwatch->stop();
     m_StartStopBtn->setText("Start");
+    disconnect(m_StartStopBtn, SIGNAL(clicked()), this, SLOT(stop()));
     connect(m_StartStopBtn, SIGNAL(clicked()), this, SLOT(start()));
 
     m_Controller.setStopwatchValue(0);
     m_Stopwatch->setText("00:00:00");
 
-    m_PauseContinueBtn->setText("Pause");
-    connect(m_PauseContinueBtn, SIGNAL(clicked()), this, SLOT(pause()));
+    if (!m_TimerStopwatch->isActive()) {
+        m_PauseContinueBtn->setText("Pause");
+        disconnect(m_PauseContinueBtn, SIGNAL(clicked()), this, SLOT(continueWork()));
+        connect(m_PauseContinueBtn, SIGNAL(clicked()), this, SLOT(pause()));
+    }
 
     m_Controller.stop();
 }
@@ -102,6 +107,7 @@ void MainWindow::pause() {
     if (m_TimerStopwatch->isActive()) {
         m_TimerStopwatch->stop();
         m_PauseContinueBtn->setText("Continue");
+        disconnect(m_PauseContinueBtn, SIGNAL(clicked()), this, SLOT(pause()));
         connect(m_PauseContinueBtn, SIGNAL(clicked()), this, SLOT(continueWork()));
 
         m_Controller.pause();
@@ -111,6 +117,7 @@ void MainWindow::pause() {
 void MainWindow::continueWork() {
     m_TimerStopwatch->start();
     m_PauseContinueBtn->setText("Pause");
+    disconnect(m_PauseContinueBtn, SIGNAL(clicked()), this, SLOT(continueWork()));
     connect(m_PauseContinueBtn, SIGNAL(clicked()), this, SLOT(pause()));
 
     m_Controller.continueWork();
