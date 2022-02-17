@@ -22,7 +22,6 @@ public:
 
     void start() override;
     void stop() override;
-
     void pause() override;
     // Не названа как "continue", потому что слово зарезервировано.
     void continueWork() override;

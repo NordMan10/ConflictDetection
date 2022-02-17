@@ -76,8 +76,44 @@ void Model::setStopwatchValue(int value) {
     m_StopwatchValue = value;
 }
 
-void Model::registerObserver(IAircraftTimerObserver& observer) {
-    m_AircraftObservers.push_back(observer);
+void Model::registerAircraftTimerObserver(IAircraftTimerObserver* observer) {
+    m_AircraftTimerObservers.push_back(observer);
 }
 
+void Model::removeAircraftTimerObserver(IAircraftTimerObserver* observer) {
+    m_AircraftTimerObservers.erase(std::remove(m_AircraftTimerObservers.begin(), m_AircraftTimerObservers.end(), observer), m_AircraftTimerObservers.end());
+}
 
+void Model::notifyAircraftTimerObservers() {
+//    for (int i = 0; i < m_AircraftTimerObservers.size(); i++)
+//    {
+//        m_AircraftTimerObservers[i]->updateAircraftData();
+//    }
+}
+
+void Model::addAircraftsObserver(IAircraftObserver* observer) {
+    m_AircraftObserver = observer;
+}
+
+void Model::createAircraft() {
+    Aircraft* aircraft = new Aircraft("A301", 100, 200, 3000);
+    aircraft->registerObserver(m_AircraftObserver);
+    m_Aircrafts.push_back(aircraft);
+    connect(m_TimerAircraftsMotion, SIGNAL(timeout()), aircraft, SLOT(updateAircraftData()));
+}
+
+void Model::start() {
+    m_TimerAircraftsMotion->start(m_TimerAircraftsMotionTickValue);
+}
+
+void Model::stop() {
+
+}
+
+void Model::pause() {
+
+}
+
+void Model::continueWork() {
+
+}

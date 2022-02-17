@@ -17,19 +17,22 @@
 #include "model.h"
 #include "controller.h"
 #include "fieldview.h"
+#include "IAircraftObserver.h"
 
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow
+class MainWindow : public QMainWindow, public IAircraftObserver
 {
     Q_OBJECT
 
 public:
     explicit MainWindow(IModel &model, IController &controller, QWidget *parent = 0);
     ~MainWindow();
+
+    void updateAircraftData() override;
 
 private:
     Ui::MainWindow *ui;

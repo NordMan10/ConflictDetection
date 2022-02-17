@@ -2,11 +2,13 @@
 #define MODEL_H
 
 #include <vector>
+#include <QTimer>
 
 #include "IModel.h"
 #include "cdpoint.h"
 #include "fieldpoints.h"
-
+#include "IAircraftObserver.h"
+#include "aircraft.h"
 
 class Model : public IModel
 {
@@ -26,7 +28,13 @@ public:
     void updateStopwatchValue(int value) override;
     void setStopwatchValue(int value) override;
 
-    void registerObserver(IAircraftTimerObserver& observer) override;
+    void registerAircraftTimerObserver(IAircraftTimerObserver* observer) override;
+    void removeAircraftTimerObserver(IAircraftTimerObserver* observer) override;
+    void notifyAircraftTimerObservers() override;
+
+    void addAircraftsObserver(IAircraftObserver* observer) override;
+
+    void createAircraft();
 
 private:
     void initPoints();
@@ -36,6 +44,12 @@ private:
     void initPathIntersectionPoints();
 
     void initPaths();
+
+    void start() override;
+    void stop() override;
+    void pause() override;
+    // Не названа как "continue", потому что слово зарезервировано.
+    void continueWork() override;
 
 private:
     std::vector<CDPoint> m_ZonePoints;
@@ -48,8 +62,14 @@ private:
 
     long long m_StopwatchValue = 0;
 
-    // Вектор не хочет хранить ссылки
-    std::vector<IAircraftTimerObserver&> m_AircraftObservers;
+    std::vector<IAircraftTimerObserver*> m_AircraftTimerObservers;
+
+    IAircraftObserver* m_AircraftObserver;
+
+    std::vector<Aircraft*> m_Aircrafts;
+
+    QTimer* m_TimerAircraftsMotion;
+    int m_TimerAircraftsMotionTickValue = 50;
 };
 
 #endif // MODEL_H

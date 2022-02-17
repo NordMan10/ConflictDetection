@@ -9,6 +9,7 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    aircraft.cpp \
     cdpoint.cpp \
     controller.cpp \
     convert.cpp \
@@ -20,9 +21,12 @@ SOURCES += \
     model.cpp
 
 HEADERS += \
-    IAircraftTimerTickObserver.h \
+    IAircraftObservable.h \
+    IAircraftObserver.h \
+    IAircraftTimerObserver.h \
     IController.h \
     IModel.h \
+    aircraft.h \
     cdpoint.h \
     controller.h \
     convert.h \

@@ -1,13 +1,16 @@
 #ifndef IMODEL_H
 #define IMODEL_H
 
-#include <vector>
+//#include <vector>
+#include <QWidget>
 
 #include "cdpoint.h"
 #include "fieldpoints.h"
-#include "IAircraftTimerTickObserver.h"
+#include "IAircraftTimerObserver.h"
+#include "IAircraftObserver.h"
 
-class IModel
+
+class IModel : public QWidget
 {
 public:
     virtual ~IModel(){};
@@ -24,8 +27,18 @@ public:
     virtual void updateStopwatchValue(int value) = 0;
     virtual void setStopwatchValue(int value) = 0;
 
+    virtual void start() = 0;
+    virtual void stop() = 0;
+    virtual void pause() = 0;
+    // Не названа как "continue", потому что слово зарезервировано.
+    virtual void continueWork() = 0;
+
     // Observer pattern methods
-    virtual void registerObserver(IAircraftTimerObserver& observer) = 0;
+    virtual void registerAircraftTimerObserver(IAircraftTimerObserver* observer) = 0;
+    virtual void removeAircraftTimerObserver(IAircraftTimerObserver* observer) = 0;
+    virtual void notifyAircraftTimerObservers() = 0;
+
+    virtual void addAircraftsObserver(IAircraftObserver* observer) = 0;
 };
 
 #endif // IMODEL_H

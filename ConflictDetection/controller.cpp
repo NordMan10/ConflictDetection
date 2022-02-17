@@ -22,19 +22,19 @@ std::vector<CDPoint> Controller::getPathIntersectionPoints() const {
 }
 
 void Controller::start() {
-
+    m_Model.start();
 }
 
 void Controller::stop() {
-
+    m_Model.stop();
 }
 
 void Controller::pause() {
-
+    m_Model.pause();
 }
 
 void Controller::continueWork() {
-
+    m_Model.continueWork();
 }
 
 long long Controller::getStopwatchValue() {

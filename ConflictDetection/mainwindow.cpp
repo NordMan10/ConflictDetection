@@ -9,11 +9,10 @@ MainWindow::MainWindow(IModel &model, IController &controller, QWidget *parent) 
 {
     ui->setupUi(this);
 
+    m_Model.addAircraftsObserver(this);
+
     standardOptions();
-
     initViewElements();
-
-    //drawStaticGraphics(m_Controller.getZonePoints());
 
     connect(m_TimerStopwatch, SIGNAL(timeout()), this, SLOT(slotTimerStopwatchTick()));
 
@@ -121,6 +120,10 @@ void MainWindow::continueWork() {
     connect(m_PauseContinueBtn, SIGNAL(clicked()), this, SLOT(pause()));
 
     m_Controller.continueWork();
+}
+
+void MainWindow::updateAircraftData() {
+
 }
 
 MainWindow::~MainWindow()
