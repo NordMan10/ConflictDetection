@@ -5,6 +5,7 @@
 
 #include "cdpoint.h"
 #include "fieldpoints.h"
+#include "IAircraftTimerTickObserver.h"
 
 class IModel
 {
@@ -22,6 +23,9 @@ public:
     virtual long long getStopwatchValue() = 0;
     virtual void updateStopwatchValue(int value) = 0;
     virtual void setStopwatchValue(int value) = 0;
+
+    // Observer pattern methods
+    virtual void registerObserver(IAircraftTimerObserver& observer) = 0;
 };
 
 #endif // IMODEL_H

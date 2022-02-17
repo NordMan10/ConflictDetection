@@ -20,6 +20,7 @@ SOURCES += \
     model.cpp
 
 HEADERS += \
+    IAircraftTimerTickObserver.h \
     IController.h \
     IModel.h \
     cdpoint.h \

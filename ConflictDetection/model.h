@@ -26,6 +26,8 @@ public:
     void updateStopwatchValue(int value) override;
     void setStopwatchValue(int value) override;
 
+    void registerObserver(IAircraftTimerObserver& observer) override;
+
 private:
     void initPoints();
 
@@ -46,6 +48,8 @@ private:
 
     long long m_StopwatchValue = 0;
 
+    // Вектор не хочет хранить ссылки
+    std::vector<IAircraftTimerObserver&> m_AircraftObservers;
 };
 
 #endif // MODEL_H

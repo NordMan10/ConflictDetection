@@ -75,3 +75,9 @@ void Model::updateStopwatchValue(int value) {
 void Model::setStopwatchValue(int value) {
     m_StopwatchValue = value;
 }
+
+void Model::registerObserver(IAircraftTimerObserver& observer) {
+    m_AircraftObservers.push_back(observer);
+}
+
+
