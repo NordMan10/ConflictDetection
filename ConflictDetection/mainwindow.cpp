@@ -14,6 +14,8 @@ MainWindow::MainWindow(IModel &model, IController &controller, QWidget *parent) 
     standardOptions();
     initViewElements();
 
+
+
     connect(m_TimerStopwatch, SIGNAL(timeout()), this, SLOT(slotTimerStopwatchTick()));
 
     connect(m_StartStopBtn, SIGNAL(clicked()), this, SLOT(start()));
@@ -60,10 +62,10 @@ void MainWindow::initViewElements() {
     m_Stopwatch->setFont(QFont("Roboto", 16));
     ui->topGrid->addWidget(m_Stopwatch, 0, 4);
 
-    fv = new FieldView(m_Model.getFieldPoints(), m_Model.getPaths());
-    m_FieldWidth = fv->getWidth();
-    m_FieldHeight = fv->getHeight();
-    ui->bottomGrid->addWidget(fv, 0, 0/*, Qt::AlignJustify*/);
+    m_FieldView = new FieldView(m_Model.getFieldPoints(), m_Model.getPaths(), m_Model.getAircrafts());
+    m_FieldWidth = m_FieldView->getWidth();
+    m_FieldHeight = m_FieldView->getHeight();
+    ui->bottomGrid->addWidget(m_FieldView, 0, 0/*, Qt::AlignJustify*/);
     //qDebug() << ui->bottomGrid->cellRect(0, 0).width() << ui->bottomGrid->cellRect(0, 0).height();
 
     m_TimerStopwatch = new QTimer();
@@ -122,8 +124,11 @@ void MainWindow::continueWork() {
     m_Controller.continueWork();
 }
 
-void MainWindow::updateAircraftData() {
+void MainWindow::updateAircraftData(/*std::vector<Aircraft*>& aircrafts*/) {
+//    for (int i = 0; i < aircrafts.size(); i++) {
 
+//    }
+    m_FieldView->updateGraphics();
 }
 
 MainWindow::~MainWindow()
@@ -131,7 +136,7 @@ MainWindow::~MainWindow()
     // В теории этого делать не нужно, поскольку с закрытием главного окна завершается работа
     // приложения, а значит и освобождается вся память.
     delete ui;
-    delete fv;
+    delete m_FieldView;
     delete m_StartStopBtn;
     delete m_PauseContinueBtn;
     delete m_Stopwatch;

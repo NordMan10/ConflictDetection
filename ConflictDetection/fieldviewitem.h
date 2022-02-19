@@ -8,17 +8,21 @@
 
 #include "cdpoint.h"
 #include "fieldpoints.h"
+#include "aircraft.h"
 
 class FieldViewItem : public QGraphicsItem
 {
 public:
-    FieldViewItem(FieldPoints &fieldPoints, std::vector<std::vector<CDPoint>>& paths);
+    FieldViewItem(FieldPoints &fieldPoints, std::vector<std::vector<CDPoint>>& paths,
+                  std::vector<Aircraft*>& aircrafts);
 
     QRectF boundingRect() const override;
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
     void setGeometry(int aWidth, int aHeight);
+
+    void updateGraphics();
 
     //void drawZonePoints(std::vector<QPoint> points);
 
@@ -31,6 +35,8 @@ private:
 
     void drawPathIntersectionPoints(QPainter *painter);
 
+    void drawAircrafts(QPainter* painter);
+
 private:
     int m_Width = 100;
     int m_Height = 100;
@@ -38,6 +44,8 @@ private:
     FieldPoints &m_FieldPoints;
 
     std::vector<std::vector<CDPoint>>& m_Paths;
+
+    std::vector<Aircraft*>& m_Aircrafts;
 };
 
 #endif // FIELDVIEWITEM_H

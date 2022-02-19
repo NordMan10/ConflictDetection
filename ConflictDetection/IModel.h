@@ -10,8 +10,9 @@
 #include "IAircraftObserver.h"
 
 
-class IModel //: public QWidget
+class IModel : public QWidget
 {
+    Q_OBJECT
 public:
     virtual ~IModel(){};
 
@@ -22,6 +23,8 @@ public:
     virtual FieldPoints& getFieldPoints() = 0;
 
     virtual std::vector<std::vector<CDPoint>>& getPaths() = 0;
+
+    virtual std::vector<Aircraft*>& getAircrafts() = 0;
 
     virtual long long getStopwatchValue() = 0;
     virtual void updateStopwatchValue(int value) = 0;

@@ -2,20 +2,20 @@
 #define AIRCRAFT_H
 
 #include <string>
-#include <QWidget>
+//#include <QWidget>
+#include <QPixmap>
 
 #include "IAircraftTimerObserver.h"
-#include "IAircraftObservable.h"
-#include "IAircraftObserver.h"
+#include "cdpoint.h"
 
-class Aircraft : public IAircraftTimerObserver, public IAircraftObservable
+class Aircraft : public IAircraftTimerObserver//, public IAircraftObservable
 {
 public:
     Aircraft(std::string id, int x, int y, int z);
 
-    void registerObserver(IAircraftObserver* observer) override;
-    void removeObserver(IAircraftObserver* observer) override;
-    void notifyObservers() override;
+//    void registerObserver(IAircraftObserver* observer) override;
+//    void removeObserver(IAircraftObserver* observer) override;
+//    void notifyObservers() override;
 
     std::string getId() const;
 
@@ -23,14 +23,16 @@ public:
     int y() const;
     int z() const;
 
-signals:
-    void signal_updateAircraftData();
+    QPixmap image;
+
+//signals:
+//    void signal_updateAircraftData();
 
 public slots:
     void updateAircraftData() override;
 
 private:
-    std::vector<IAircraftObserver*> m_AircraftObservers;
+//    std::vector<IAircraftObserver*> m_AircraftObservers;
 
     // Условный идентификатор ВС, который будет выводится в формуляр
     std::string m_Id;
@@ -58,6 +60,8 @@ private:
 
     // Радиус в метрах
     int m_DangerRadius = 5000;
+
+    std::vector<CDPoint> path;
 };
 
 #endif // AIRCRAFT_H

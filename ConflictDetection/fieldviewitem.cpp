@@ -1,8 +1,10 @@
 #include "fieldviewitem.h"
 
-FieldViewItem::FieldViewItem(FieldPoints &fieldPoints, std::vector<std::vector<CDPoint>>& paths) :
+FieldViewItem::FieldViewItem(FieldPoints &fieldPoints, std::vector<std::vector<CDPoint>>& paths,
+                             std::vector<Aircraft*>& aircrafts) :
     m_FieldPoints(fieldPoints),
-    m_Paths(paths)
+    m_Paths(paths),
+    m_Aircrafts(aircrafts)
 {
     QGraphicsItem::update();
 }
@@ -31,6 +33,8 @@ void FieldViewItem::paint(QPainter *painter, const QStyleOptionGraphicsItem */*o
     drawPathPoints(painter);
 
     drawPathIntersectionPoints(painter);
+
+    drawAircrafts(painter);
 }
 
 void FieldViewItem::drawZonePoints(QPainter *painter) {
@@ -93,8 +97,21 @@ void FieldViewItem::drawPathIntersectionPoints(QPainter *painter) {
     }
 }
 
+void FieldViewItem::drawAircrafts(QPainter* painter) {
+    for (int i = 0; i < m_Aircrafts.size(); i++) {
+        painter->save();
+        painter->translate(m_Aircrafts[i]->x(), m_Aircrafts[i]->y());
+        painter->rotate(45);
+        painter->drawPixmap(-20, -20, 40, 40, m_Aircrafts[i]->image);
+        painter->restore();
+    }
+}
+
 void FieldViewItem::setGeometry(int aWidth, int aHeight) {
     m_Width = aWidth;
     m_Height = aHeight;
 }
 
+void FieldViewItem::updateGraphics() {
+    QGraphicsItem::update();
+}

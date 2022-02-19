@@ -1,8 +1,10 @@
 #include "fieldview.h"
 
-FieldView::FieldView(FieldPoints &fieldPoints, std::vector<std::vector<CDPoint>>& paths) :
+FieldView::FieldView(FieldPoints &fieldPoints, std::vector<std::vector<CDPoint>>& paths,
+                     std::vector<Aircraft*>& aircrafts) :
     m_FieldPoints(fieldPoints),
-    m_Paths(paths)
+    m_Paths(paths),
+    m_Aircrafts(aircrafts)
 {
     m_PosX = 240;
     m_PosY = 45;
@@ -44,7 +46,7 @@ void FieldView::standardOptions() {
 }
 
 void FieldView::initViewElements() {
-    m_fvItem = new FieldViewItem(m_FieldPoints, m_Paths);
+    m_fvItem = new FieldViewItem(m_FieldPoints, m_Paths, m_Aircrafts);
     m_fvItem->setPos(0, 0);
     //qDebug() << width() << height();
     m_fvItem->setGeometry(1440, 810);
@@ -63,8 +65,8 @@ int FieldView::getHeight() const {
     return m_Height;
 }
 
-void FieldView::drawStaticGraphics(std::vector<CDPoint> zonePoints) {
-
+void FieldView::updateGraphics() {
+    m_fvItem->updateGraphics();
 }
 
 FieldView::~FieldView() {

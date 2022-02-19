@@ -19,7 +19,6 @@
 #include "fieldview.h"
 #include "IAircraftObserver.h"
 
-
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -32,12 +31,12 @@ public:
     explicit MainWindow(IModel &model, IController &controller, QWidget *parent = 0);
     ~MainWindow();
 
-    void updateAircraftData() override;
+    void updateAircraftData(/*std::vector<Aircraft*>& aircrafts*/) override;
 
 private:
     Ui::MainWindow *ui;
 
-    FieldView *fv;
+    FieldView *m_FieldView;
 
     IModel &m_Model;
     IController &m_Controller;

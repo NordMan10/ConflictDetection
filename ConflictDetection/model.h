@@ -10,10 +10,11 @@
 #include "IAircraftObserver.h"
 #include "aircraft.h"
 
-class Model : public IModel, public QWidget
+class Model : public IModel//, public QWidget
 {
+
 public:
-    Model(QWidget *parent = 0);
+    Model();
 
 public:
     std::vector<CDPoint>& getZonePoints() override;
@@ -23,6 +24,8 @@ public:
     FieldPoints& getFieldPoints() override;
 
     std::vector<std::vector<CDPoint>>& getPaths() override;
+
+    std::vector<Aircraft*>& getAircrafts() override;
 
     long long getStopwatchValue() override;
     void updateStopwatchValue(int value) override;
@@ -36,9 +39,9 @@ public:
 
     void createAircraft();
 
-public slots:
+protected slots:
     //void timerAircraftsMotionTimeout();
-    void notifyAircraftTimerObservers();
+    //void notifyAircraftTimerObservers() override;
 
 private:
     void initPoints();
@@ -54,6 +57,8 @@ private:
     void pause() override;
     // Не названа как "continue", потому что слово зарезервировано.
     void continueWork() override;
+
+    void notifyAircraftTimerObservers();
 
 private:
     std::vector<CDPoint> m_ZonePoints;
