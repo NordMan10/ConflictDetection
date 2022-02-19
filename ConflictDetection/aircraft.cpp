@@ -1,44 +1,55 @@
 #include "aircraft.h"
 
-Aircraft::Aircraft(std::string id, int x, int y, int z) :
-    m_Id(id), m_X(x), m_Y(y), m_Z(z)
+Aircraft::Aircraft(std::string id, AircraftPath path) :
+    m_Id(id),
+    m_Path(path),
+    m_ActivePathStartPoint(path.getPath()[0]),
+    m_ActivePathEndPoint(path.getPath()[1])
 {
+    m_X = m_Path.getPath()[0].x();
+    m_Y = m_Path.getPath()[0].y();
+    m_Z = m_Path.getPath()[0].z();
+
     image = QPixmap(":/resources/img/aircraft.png");
-    //registerObserver(aircraftObserver);
-    //connect(this, SIGNAL(signal_updateAircraftData()), aircraftObserver, SLOT(updateAircraftData));
 }
 
-void Aircraft::updateAircraftData() {
-    m_X++;
+void Aircraft::updateAircraftData(int timerTickValue) {
+    auto angle = getHorizontalAngle();
+
+    double pathShift = m_Velocity / (1000 / timerTickValue);
+
+    double xShift = (pathShift * std::cos(angle * PI / 180)) /*/ Convert::s_MetersInPixel*/;
+    double yShift = (-1) * (pathShift * std::sin(angle * PI / 180)) /*/ Convert::s_MetersInPixel*/;
+
+    m_X += xShift;
+    m_Y += yShift;
 }
-
-//void Aircraft::registerObserver(IAircraftObserver* observer) {
-//    m_AircraftObservers.push_back(observer);
-//}
-
-//void Aircraft::removeObserver(IAircraftObserver* observer) {
-//    m_AircraftObservers.erase(std::remove(m_AircraftObservers.begin(), m_AircraftObservers.end(), observer), m_AircraftObservers.end());
-//}
-
-//void Aircraft::notifyObservers() {
-//    for (int i = 0; i < m_AircraftObservers.size(); i++) {
-//        m_AircraftObservers[i]->updateAircraftData();
-//    }
-//}
 
 std::string Aircraft::getId() const {
     return m_Id;
 }
 
-int Aircraft::x() const {
+double Aircraft::x() const {
     return m_X;
 }
 
-int Aircraft::y() const {
+double Aircraft::y() const {
     return m_Y;
 }
 
-int Aircraft::z() const {
+double Aircraft::z() const {
     return m_Z;
 }
 
+AircraftPath& Aircraft::getPath() {
+    return m_Path;
+}
+
+double Aircraft::getHorizontalAngle() {
+    int dx = (m_ActivePathStartPoint.x() - m_ActivePathEndPoint.x()) * -1;
+    int dy = m_ActivePathStartPoint.y() - m_ActivePathEndPoint.y();
+
+    double angle = std::atan2(dy, dx) * 180 / PI;
+
+    return angle;
+}

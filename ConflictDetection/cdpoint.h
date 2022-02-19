@@ -12,7 +12,7 @@
 class CDPoint
 {
 public:
-    CDPoint(int x, int y, bool rawCoords = true);
+    CDPoint(int x, int y, int z = 3000, bool rawCoords = true);
 
     //static int getNextId();
 
@@ -20,6 +20,7 @@ public:
 
     int x();
     int y();
+    int z();
 
     //CDPointType getType();
 
@@ -28,8 +29,8 @@ private:
 
     int m_X;
     int m_Y;
+    int m_Z;
 
-    std::tuple<int> t;
     //CDPointType m_Type;
 
     //static int ms_PointCount;

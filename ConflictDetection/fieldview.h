@@ -16,7 +16,7 @@
 class FieldView : public QGraphicsView
 {
 public:
-    FieldView(FieldPoints &fieldPoints, std::vector<std::vector<CDPoint>>& paths,
+    FieldView(FieldPoints &fieldPoints, std::vector<AircraftPath>& paths,
               std::vector<Aircraft*>& aircrafts);
     //FieldView(int width, int height);
     ~FieldView();
@@ -39,7 +39,7 @@ private:
 
     FieldPoints& m_FieldPoints;
 
-    std::vector<std::vector<CDPoint>>& m_Paths;
+    std::vector<AircraftPath>& m_AircraftPaths;
 
     std::vector<Aircraft*>& m_Aircrafts;
 

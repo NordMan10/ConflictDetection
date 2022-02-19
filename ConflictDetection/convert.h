@@ -17,7 +17,7 @@ public:
     static std::tuple<int, int> TransformCoordsFromSchemeToProgram(int z, int x);
 
 public:
-    static int s_MetersInPixel;
+    static double s_MetersInPixel;
 
     static int s_FieldWidth;
     static int s_FieldHeight;

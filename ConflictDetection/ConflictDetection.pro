@@ -10,6 +10,7 @@ CONFIG += c++11
 
 SOURCES += \
     aircraft.cpp \
+    aircraftpath.cpp \
     cdpoint.cpp \
     controller.cpp \
     convert.cpp \
@@ -27,6 +28,7 @@ HEADERS += \
     IController.h \
     IModel.h \
     aircraft.h \
+    aircraftpath.h \
     cdpoint.h \
     controller.h \
     convert.h \

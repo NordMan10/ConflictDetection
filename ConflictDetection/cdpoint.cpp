@@ -1,6 +1,6 @@
 #include "cdpoint.h"
 
-CDPoint::CDPoint(int x, int y, bool rawCoords)
+CDPoint::CDPoint(int x, int y, int z, bool rawCoords)
 {
     //m_Id = id;
     //m_Type = type;
@@ -28,5 +28,7 @@ CDPoint::CDPoint(int x, int y, bool rawCoords)
 int CDPoint::x() { return m_X; }
 
 int CDPoint::y() { return m_Y; }
+
+int CDPoint::z() { return m_Z; }
 
 //CDPointType CDPoint::getType() { return m_Type; }

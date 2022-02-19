@@ -1,9 +1,9 @@
 #include "fieldview.h"
 
-FieldView::FieldView(FieldPoints &fieldPoints, std::vector<std::vector<CDPoint>>& paths,
+FieldView::FieldView(FieldPoints &fieldPoints, std::vector<AircraftPath>& paths,
                      std::vector<Aircraft*>& aircrafts) :
     m_FieldPoints(fieldPoints),
-    m_Paths(paths),
+    m_AircraftPaths(paths),
     m_Aircrafts(aircrafts)
 {
     m_PosX = 240;
@@ -46,7 +46,7 @@ void FieldView::standardOptions() {
 }
 
 void FieldView::initViewElements() {
-    m_fvItem = new FieldViewItem(m_FieldPoints, m_Paths, m_Aircrafts);
+    m_fvItem = new FieldViewItem(m_FieldPoints, m_AircraftPaths, m_Aircrafts);
     m_fvItem->setPos(0, 0);
     //qDebug() << width() << height();
     m_fvItem->setGeometry(1440, 810);

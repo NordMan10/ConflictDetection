@@ -13,7 +13,7 @@
 class FieldViewItem : public QGraphicsItem
 {
 public:
-    FieldViewItem(FieldPoints &fieldPoints, std::vector<std::vector<CDPoint>>& paths,
+    FieldViewItem(FieldPoints &fieldPoints, std::vector<AircraftPath>& paths,
                   std::vector<Aircraft*>& aircrafts);
 
     QRectF boundingRect() const override;
@@ -43,7 +43,7 @@ private:
 
     FieldPoints &m_FieldPoints;
 
-    std::vector<std::vector<CDPoint>>& m_Paths;
+    std::vector<AircraftPath>& m_AircraftPaths;
 
     std::vector<Aircraft*>& m_Aircrafts;
 };

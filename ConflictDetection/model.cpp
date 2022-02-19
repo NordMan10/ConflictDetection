@@ -28,8 +28,8 @@ FieldPoints& Model::getFieldPoints() {
     return m_FieldPoints;
 }
 
-std::vector<std::vector<CDPoint>>& Model::getPaths() {
-    return m_Paths;
+std::vector<AircraftPath>& Model::getPaths() {
+    return m_AircraftPaths;
 }
 
 std::vector<Aircraft*>& Model::getAircrafts() {
@@ -66,11 +66,11 @@ void Model::initPathIntersectionPoints() {
 }
 
 void Model::initPaths() {
-    m_Paths.push_back({m_PathPoints[0], m_PathPoints[3]});
-    m_Paths.push_back({m_PathPoints[1], m_PathPoints[5]});
-    m_Paths.push_back({m_PathPoints[2], m_PathPoints[4]});
-    m_Paths.push_back({m_PathPoints[5], m_PathPoints[3]});
-    m_Paths.push_back({m_PathPoints[6], m_PathIntersectionPoints[0], m_PathPoints[3]});
+    m_AircraftPaths.push_back(AircraftPath({m_PathPoints[0], m_PathPoints[3]}));
+    m_AircraftPaths.push_back(AircraftPath({m_PathPoints[1], m_PathPoints[5]}));
+    m_AircraftPaths.push_back(AircraftPath({m_PathPoints[2], m_PathPoints[4]}));
+    m_AircraftPaths.push_back(AircraftPath({m_PathPoints[5], m_PathPoints[3]}));
+    m_AircraftPaths.push_back(AircraftPath({m_PathPoints[6], m_PathIntersectionPoints[0], m_PathPoints[3]}));
 }
 
 long long Model::getStopwatchValue() {
@@ -96,7 +96,7 @@ void Model::removeAircraftTimerObserver(IAircraftTimerObserver* observer) {
 void Model::notifyAircraftTimerObservers() {
     for (int i = 0; i < m_AircraftTimerObservers.size(); i++)
     {
-        m_AircraftTimerObservers[i]->updateAircraftData();
+        m_AircraftTimerObservers[i]->updateAircraftData(m_TimerAircraftsMotionTickValue);
     }
 
     m_AircraftObserver->updateAircraftData();
@@ -107,9 +107,8 @@ void Model::addAircraftsObserver(IAircraftObserver* observer) {
 }
 
 void Model::createAircraft() {
-    m_Aircrafts.push_back(new Aircraft("A301", 100, 200, 3000));
-    //Aircraft aircraft("A301", 100, 200, 3000);
-    //m_Aircrafts[m_Aircrafts.size() - 1]->registerObserver(m_AircraftObserver);
+    m_Aircrafts.push_back(new Aircraft("A301", m_AircraftPaths[0]));
+
     registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
 }
 

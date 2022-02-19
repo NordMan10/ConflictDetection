@@ -1,9 +1,9 @@
 #include "fieldviewitem.h"
 
-FieldViewItem::FieldViewItem(FieldPoints &fieldPoints, std::vector<std::vector<CDPoint>>& paths,
+FieldViewItem::FieldViewItem(FieldPoints &fieldPoints, std::vector<AircraftPath>& paths,
                              std::vector<Aircraft*>& aircrafts) :
     m_FieldPoints(fieldPoints),
-    m_Paths(paths),
+    m_AircraftPaths(paths),
     m_Aircrafts(aircrafts)
 {
     QGraphicsItem::update();
@@ -75,13 +75,13 @@ void FieldViewItem::drawPathPoints(QPainter *painter) {
 void FieldViewItem::drawPathLines(QPainter *painter) {
     //painter->setPen(QPen(Qt::green, 2));
 
-    for (size_t i = 0; i < m_Paths.size(); i++) {
+    for (size_t i = 0; i < m_AircraftPaths.size(); i++) {
         painter->setPen(QPen(Qt::green, 2));
-        for (size_t j = 0; j < m_Paths[i].size() - 1; j++) {
-            painter->drawLine(m_Paths[i][j].x(), m_Paths[i][j].y(), m_Paths[i][j + 1].x(), m_Paths[i][j + 1].y());
+        for (size_t j = 0; j < m_AircraftPaths[i].getPath().size() - 1; j++) {
+            painter->drawLine(m_AircraftPaths[i].getPath()[j].x(), m_AircraftPaths[i].getPath()[j].y(), m_AircraftPaths[i].getPath()[j + 1].x(), m_AircraftPaths[i].getPath()[j + 1].y());
         }
         painter->setPen(QPen(Qt::black, 2));
-        painter->drawText(QPoint(m_Paths[i][0].x() + 10, m_Paths[i][0].y() + 25), "M" + QString::number(i + 1));
+        painter->drawText(QPoint(m_AircraftPaths[i].getPath()[0].x() + 10, m_AircraftPaths[i].getPath()[0].y() + 25), "M" + QString::number(i + 1));
     }
 }
 
@@ -101,7 +101,7 @@ void FieldViewItem::drawAircrafts(QPainter* painter) {
     for (int i = 0; i < m_Aircrafts.size(); i++) {
         painter->save();
         painter->translate(m_Aircrafts[i]->x(), m_Aircrafts[i]->y());
-        painter->rotate(45);
+        painter->rotate((m_Aircrafts[i]->getHorizontalAngle() * -1) + 45);
         painter->drawPixmap(-20, -20, 40, 40, m_Aircrafts[i]->image);
         painter->restore();
     }

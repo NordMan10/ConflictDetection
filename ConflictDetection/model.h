@@ -9,6 +9,7 @@
 #include "fieldpoints.h"
 #include "IAircraftObserver.h"
 #include "aircraft.h"
+//#include "aircraftpath.h"
 
 class Model : public IModel//, public QWidget
 {
@@ -23,7 +24,7 @@ public:
 
     FieldPoints& getFieldPoints() override;
 
-    std::vector<std::vector<CDPoint>>& getPaths() override;
+    std::vector<AircraftPath>& getPaths() override;
 
     std::vector<Aircraft*>& getAircrafts() override;
 
@@ -60,6 +61,8 @@ private:
 
     void notifyAircraftTimerObservers();
 
+
+
 private:
     std::vector<CDPoint> m_ZonePoints;
     std::vector<CDPoint> m_PathPoints;
@@ -67,7 +70,7 @@ private:
 
     FieldPoints m_FieldPoints;
 
-    std::vector<std::vector<CDPoint>> m_Paths;
+    //std::vector<std::vector<CDPoint>> m_Paths;
 
     long long m_StopwatchValue = 0;
 
@@ -76,6 +79,7 @@ private:
     IAircraftObserver* m_AircraftObserver;
 
     std::vector<Aircraft*> m_Aircrafts;
+    std::vector<AircraftPath> m_AircraftPaths;
 
     QTimer* m_TimerAircraftsMotion;
     int m_TimerAircraftsMotionTickValue = 50;

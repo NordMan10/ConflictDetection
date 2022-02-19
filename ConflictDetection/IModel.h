@@ -8,7 +8,7 @@
 #include "fieldpoints.h"
 #include "IAircraftTimerObserver.h"
 #include "IAircraftObserver.h"
-
+#include "aircraft.h"
 
 class IModel : public QWidget
 {
@@ -22,7 +22,7 @@ public:
 
     virtual FieldPoints& getFieldPoints() = 0;
 
-    virtual std::vector<std::vector<CDPoint>>& getPaths() = 0;
+    virtual std::vector<AircraftPath>& getPaths() = 0;
 
     virtual std::vector<Aircraft*>& getAircrafts() = 0;
 
