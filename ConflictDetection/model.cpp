@@ -1,10 +1,15 @@
 #include "model.h"
 
-Model::Model() :
+Model::Model(QWidget *parent) :
+    QWidget(parent),
     m_FieldPoints(m_ZonePoints, m_PathPoints, m_PathIntersectionPoints)
 {
     initPoints();
     initPaths();
+
+    m_TimerAircraftsMotion = new QTimer();
+
+    connect(m_TimerAircraftsMotion, SIGNAL(timeout()), this, SLOT(notifyAircraftTimerObservers()));
 }
 
 std::vector<CDPoint>& Model::getZonePoints() {
@@ -85,10 +90,10 @@ void Model::removeAircraftTimerObserver(IAircraftTimerObserver* observer) {
 }
 
 void Model::notifyAircraftTimerObservers() {
-//    for (int i = 0; i < m_AircraftTimerObservers.size(); i++)
-//    {
-//        m_AircraftTimerObservers[i]->updateAircraftData();
-//    }
+    for (int i = 0; i < m_AircraftTimerObservers.size(); i++)
+    {
+        m_AircraftTimerObservers[i]->updateAircraftData();
+    }
 }
 
 void Model::addAircraftsObserver(IAircraftObserver* observer) {
@@ -96,10 +101,10 @@ void Model::addAircraftsObserver(IAircraftObserver* observer) {
 }
 
 void Model::createAircraft() {
-    Aircraft* aircraft = new Aircraft("A301", 100, 200, 3000);
-    aircraft->registerObserver(m_AircraftObserver);
-    m_Aircrafts.push_back(aircraft);
-    connect(m_TimerAircraftsMotion, SIGNAL(timeout()), aircraft, SLOT(updateAircraftData()));
+    m_Aircrafts.push_back(new Aircraft("A301", 100, 200, 3000));
+    //Aircraft aircraft("A301", 100, 200, 3000);
+    m_Aircrafts[m_Aircrafts.size() - 1]->registerObserver(m_AircraftObserver);
+    registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
 }
 
 void Model::start() {
@@ -107,13 +112,13 @@ void Model::start() {
 }
 
 void Model::stop() {
-
+    m_TimerAircraftsMotion->stop();
 }
 
 void Model::pause() {
-
+    m_TimerAircraftsMotion->stop();
 }
 
 void Model::continueWork() {
-
+    m_TimerAircraftsMotion->start();
 }

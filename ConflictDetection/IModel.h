@@ -10,7 +10,7 @@
 #include "IAircraftObserver.h"
 
 
-class IModel : public QWidget
+class IModel //: public QWidget
 {
 public:
     virtual ~IModel(){};
@@ -36,9 +36,12 @@ public:
     // Observer pattern methods
     virtual void registerAircraftTimerObserver(IAircraftTimerObserver* observer) = 0;
     virtual void removeAircraftTimerObserver(IAircraftTimerObserver* observer) = 0;
-    virtual void notifyAircraftTimerObservers() = 0;
+    //virtual void notifyAircraftTimerObservers() = 0;
 
     virtual void addAircraftsObserver(IAircraftObserver* observer) = 0;
+
+//protected slots:
+//    virtual void notifyAircraftTimerObservers();
 };
 
 #endif // IMODEL_H

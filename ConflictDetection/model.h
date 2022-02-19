@@ -10,10 +10,10 @@
 #include "IAircraftObserver.h"
 #include "aircraft.h"
 
-class Model : public IModel
+class Model : public IModel, public QWidget
 {
 public:
-    Model();
+    Model(QWidget *parent = 0);
 
 public:
     std::vector<CDPoint>& getZonePoints() override;
@@ -30,11 +30,15 @@ public:
 
     void registerAircraftTimerObserver(IAircraftTimerObserver* observer) override;
     void removeAircraftTimerObserver(IAircraftTimerObserver* observer) override;
-    void notifyAircraftTimerObservers() override;
+    //void notifyAircraftTimerObservers() override;
 
     void addAircraftsObserver(IAircraftObserver* observer) override;
 
     void createAircraft();
+
+public slots:
+    //void timerAircraftsMotionTimeout();
+    void notifyAircraftTimerObservers();
 
 private:
     void initPoints();

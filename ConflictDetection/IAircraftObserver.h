@@ -1,6 +1,8 @@
 #ifndef IAIRCRAFTOBSERVER_H
 #define IAIRCRAFTOBSERVER_H
 
+#include <QWidget>
+
 class IAircraftObserver
 {
 public:

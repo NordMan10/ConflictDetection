@@ -8,7 +8,7 @@ class IAircraftTimerObserver : public QWidget
 public:
     virtual ~IAircraftTimerObserver(){};
 
-private slots:
+public slots:
     virtual void updateAircraftData() = 0;
 };
 

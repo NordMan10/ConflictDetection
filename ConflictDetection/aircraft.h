@@ -26,7 +26,7 @@ public:
 signals:
     void signal_updateAircraftData();
 
-private slots:
+public slots:
     void updateAircraftData() override;
 
 private:

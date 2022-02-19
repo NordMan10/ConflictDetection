@@ -1,13 +1,10 @@
 #include "aircraft.h"
 
-Aircraft::Aircraft(std::string id, int x, int y, int z, IAircraftObserver* aircraftObserver)
+Aircraft::Aircraft(std::string id, int x, int y, int z) :
+    m_Id(id), m_X(x), m_Y(y), m_Z(z)
 {
-    m_Id = id;
-    m_X = x;
-    m_Y = y;
-    m_Z = z;
-
-    connect(this, SIGNAL(signal_updateAircraftData()), aircraftObserver, SLOT(updateAircraftData));
+    //registerObserver(aircraftObserver);
+    //connect(this, SIGNAL(signal_updateAircraftData()), aircraftObserver, SLOT(updateAircraftData));
 }
 
 void Aircraft::updateAircraftData() {
