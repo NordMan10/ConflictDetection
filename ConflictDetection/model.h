@@ -5,13 +5,13 @@
 #include <QTimer>
 
 #include "IModel.h"
-#include "cdpoint.h"
-#include "fieldpoints.h"
-#include "IAircraftObserver.h"
-#include "aircraft.h"
+//#include "cdpoint.h"
+//#include "fieldpoints.h"
+//#include "IAircraftObserver.h"
+//#include "aircraft.h"
 //#include "aircraftpath.h"
 
-class Model : public IModel//, public QWidget
+class Model : public IModel, public IAircraftObserver
 {
 
 public:
@@ -36,9 +36,11 @@ public:
     void removeAircraftTimerObserver(IAircraftTimerObserver* observer) override;
     //void notifyAircraftTimerObservers() override;
 
-    void addAircraftsObserver(IAircraftObserver* observer) override;
+    void registerAircraftsObserver(IAircraftObserver* observer) override;
 
     void createAircraft();
+
+    void updateAircraftData(int aircraftListIndex) override;
 
 protected slots:
     //void timerAircraftsMotionTimeout();

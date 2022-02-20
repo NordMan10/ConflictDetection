@@ -16,12 +16,13 @@ CDPoint::CDPoint(int x, int y, int z, bool rawCoords)
     }
 }
 
-//int CDPoint::ms_PointCount = 0;
+bool operator==(const CDPoint& p1, const CDPoint& p2) {
+    return p1.m_X == p2.m_X && p1.m_Y == p2.m_Y && p1.m_Z == p2.m_Z;
+}
 
-//int CDPoint::getNextId() {
-//    ms_PointCount++;
-//    return ms_PointCount;
-//}
+bool operator!=(const CDPoint& p1, const CDPoint& p2) {
+    return !(p1 == p2);
+}
 
 //int CDPoint::getId() { return m_Id; }
 

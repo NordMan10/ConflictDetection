@@ -24,6 +24,9 @@ public:
 
     //CDPointType getType();
 
+    friend bool operator==(const CDPoint& p1, const CDPoint& p2);
+    friend bool operator!=(const CDPoint& p1, const CDPoint& p2);
+
 private:
     //int m_Id;
 

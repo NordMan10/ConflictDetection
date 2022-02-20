@@ -31,7 +31,7 @@ public:
     explicit MainWindow(IModel &model, IController &controller, QWidget *parent = 0);
     ~MainWindow();
 
-    void updateAircraftData(/*std::vector<Aircraft*>& aircrafts*/) override;
+    void updateAircraftData(int aircraftListIndex) override;
 
 private:
     Ui::MainWindow *ui;

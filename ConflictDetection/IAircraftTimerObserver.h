@@ -7,7 +7,7 @@ class IAircraftTimerObserver
 public:
     virtual ~IAircraftTimerObserver(){};
 
-    virtual void updateAircraftData(int timerTickValue) = 0;
+    virtual void updateData(int timerTickValue) = 0;
 };
 
 #endif // IAIRCRAFTTIMEROBSERVER_H

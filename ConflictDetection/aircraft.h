@@ -2,7 +2,6 @@
 #define AIRCRAFT_H
 
 #include <string>
-//#include <QWidget>
 #include <QPixmap>
 
 #include "IAircraftTimerObserver.h"
@@ -15,7 +14,7 @@
 class Aircraft : public IAircraftTimerObserver
 {
 public:
-    Aircraft(std::string id, AircraftPath path);
+    Aircraft(std::string id, AircraftPath path, IAircraftObserver* observer, int aircraftListIndex, int timerTickValue);
 
     std::string getId() const;
 
@@ -29,10 +28,23 @@ public:
 
     double getHorizontalAngle();
 
-    void updateAircraftData(int timerTickValue) override;
+    void updateData(int timerTickValue) override;
 
 private:
-    //std::vector<IAircraftObserver&> m_AircraftObservers;
+    void handleArrivalToEndPoint();
+
+    void handleArrivalToMiddlePoint();
+    void changeMotionDirection();
+
+    void calculateShifts(int timerTickValue);
+
+    bool isAircraftAtPoint(CDPoint point);
+
+    CDPoint getNextPathPoint(CDPoint point);
+
+private:
+    std::vector<IAircraftObserver*> m_AircraftObservers;
+    int m_AircraftListIndex;
 
     // Условный идентификатор ВС, который будет выводится в формуляр
     std::string m_Id;
@@ -66,7 +78,10 @@ private:
     CDPoint m_ActivePathStartPoint;
     CDPoint m_ActivePathEndPoint;
 
-    //int m_HorizontalAngle;
+    double m_XShift;
+    double m_YShift;
+
+    int m_TimerTickValue;
 };
 
 #endif // AIRCRAFT_H

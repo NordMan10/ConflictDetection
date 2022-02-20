@@ -1,28 +1,30 @@
 #include "aircraft.h"
 
-Aircraft::Aircraft(std::string id, AircraftPath path) :
+Aircraft::Aircraft(std::string id, AircraftPath path, IAircraftObserver* observer, int aircraftListIndex, int timerTickValue) :
     m_Id(id),
     m_Path(path),
     m_ActivePathStartPoint(path.getPath()[0]),
     m_ActivePathEndPoint(path.getPath()[1])
 {
+    m_AircraftObservers.push_back(observer);
+    m_AircraftListIndex = aircraftListIndex;
+
     m_X = m_Path.getPath()[0].x();
     m_Y = m_Path.getPath()[0].y();
     m_Z = m_Path.getPath()[0].z();
 
     image = QPixmap(":/resources/img/aircraft.png");
+
+    m_TimerTickValue = timerTickValue;
+    calculateShifts(timerTickValue);
 }
 
-void Aircraft::updateAircraftData(int timerTickValue) {
-    auto angle = getHorizontalAngle();
+void Aircraft::updateData(int timerTickValue) {
+    m_X += m_XShift;
+    m_Y += m_YShift;
 
-    double pathShift = m_Velocity / (1000 / timerTickValue);
-
-    double xShift = (pathShift * std::cos(angle * PI / 180)) /*/ Convert::s_MetersInPixel*/;
-    double yShift = (-1) * (pathShift * std::sin(angle * PI / 180)) /*/ Convert::s_MetersInPixel*/;
-
-    m_X += xShift;
-    m_Y += yShift;
+    handleArrivalToMiddlePoint();
+    handleArrivalToEndPoint();
 }
 
 std::string Aircraft::getId() const {
@@ -53,3 +55,59 @@ double Aircraft::getHorizontalAngle() {
 
     return angle;
 }
+
+void Aircraft::handleArrivalToEndPoint() {
+    CDPoint endPoint = m_Path.getPath()[m_Path.getPath().size() - 1];
+    if (isAircraftAtPoint(endPoint)) {
+        for (int i = 0; i < m_AircraftObservers.size(); i++) {
+            m_AircraftObservers[i]->updateAircraftData(m_AircraftListIndex);
+        }
+        m_AircraftObservers.clear();
+    }
+}
+
+void Aircraft::handleArrivalToMiddlePoint() {
+    if (isAircraftAtPoint(m_ActivePathEndPoint)) {
+        if (m_ActivePathEndPoint != m_Path.getPath().back()) {
+            m_ActivePathStartPoint = m_ActivePathEndPoint;
+            m_ActivePathEndPoint = getNextPathPoint(m_ActivePathStartPoint);
+
+            calculateShifts(m_TimerTickValue);
+        }
+    }
+}
+
+void Aircraft::calculateShifts(int timerTickValue) {
+    auto angle = getHorizontalAngle();
+
+    double pathShift = m_Velocity / (1000 / timerTickValue);
+
+    double xShift = (pathShift * std::cos(angle * PI / 180)) /*/ Convert::s_MetersInPixel*/;
+    double yShift = (-1) * (pathShift * std::sin(angle * PI / 180)) /*/ Convert::s_MetersInPixel*/;
+
+    m_XShift = xShift;
+    m_YShift = yShift;
+}
+
+bool Aircraft::isAircraftAtPoint(CDPoint point) {
+    return (std::abs(m_X - point.x()) < 10 && std::abs(m_Y - point.y()) < 10);
+}
+
+CDPoint Aircraft::getNextPathPoint(CDPoint point) {
+    for (int i = 0; i < m_Path.getPath().size(); i++) {
+        if (m_Path.getPath()[i] == point)
+            return m_Path.getPath()[i + 1];
+    }
+
+    throw std::invalid_argument("The argument point is not contained in the aircraft path");
+}
+
+
+
+
+
+
+
+
+
+

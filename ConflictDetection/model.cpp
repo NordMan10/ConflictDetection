@@ -96,20 +96,26 @@ void Model::removeAircraftTimerObserver(IAircraftTimerObserver* observer) {
 void Model::notifyAircraftTimerObservers() {
     for (int i = 0; i < m_AircraftTimerObservers.size(); i++)
     {
-        m_AircraftTimerObservers[i]->updateAircraftData(m_TimerAircraftsMotionTickValue);
+        m_AircraftTimerObservers[i]->updateData(m_TimerAircraftsMotionTickValue);
     }
 
-    m_AircraftObserver->updateAircraftData();
+    m_AircraftObserver->updateAircraftData(-1);
 }
 
-void Model::addAircraftsObserver(IAircraftObserver* observer) {
+void Model::registerAircraftsObserver(IAircraftObserver* observer) {
     m_AircraftObserver = observer;
 }
 
 void Model::createAircraft() {
-    m_Aircrafts.push_back(new Aircraft("A301", m_AircraftPaths[0]));
-
+    m_Aircrafts.push_back(new Aircraft("A301", m_AircraftPaths[0], this, (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
     registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
+
+    m_Aircrafts.push_back(new Aircraft("A302", m_AircraftPaths[4], this, (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
+    registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
+}
+
+void Model::updateAircraftData(int aircraftListIndex) {
+    m_Aircrafts.erase(m_Aircrafts.begin() + aircraftListIndex);
 }
 
 void Model::start() {

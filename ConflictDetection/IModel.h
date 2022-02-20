@@ -41,7 +41,7 @@ public:
     virtual void removeAircraftTimerObserver(IAircraftTimerObserver* observer) = 0;
     //virtual void notifyAircraftTimerObservers() = 0;
 
-    virtual void addAircraftsObserver(IAircraftObserver* observer) = 0;
+    virtual void registerAircraftsObserver(IAircraftObserver* observer) = 0;
 
 //protected slots:
 //    virtual void notifyAircraftTimerObservers();

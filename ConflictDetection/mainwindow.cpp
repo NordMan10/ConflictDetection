@@ -9,7 +9,7 @@ MainWindow::MainWindow(IModel &model, IController &controller, QWidget *parent) 
 {
     ui->setupUi(this);
 
-    m_Model.addAircraftsObserver(this);
+    m_Model.registerAircraftsObserver(this);
 
     standardOptions();
     initViewElements();
@@ -124,10 +124,7 @@ void MainWindow::continueWork() {
     m_Controller.continueWork();
 }
 
-void MainWindow::updateAircraftData(/*std::vector<Aircraft*>& aircrafts*/) {
-//    for (int i = 0; i < aircrafts.size(); i++) {
-
-//    }
+void MainWindow::updateAircraftData(int aircraftListIndex) {
     m_FieldView->updateGraphics();
 }
 
