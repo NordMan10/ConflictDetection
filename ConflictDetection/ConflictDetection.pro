@@ -17,6 +17,7 @@ SOURCES += \
     fieldpoints.cpp \
     fieldview.cpp \
     fieldviewitem.cpp \
+    graphics_view_zoom.cpp \
     main.cpp \
     mainwindow.cpp \
     model.cpp
@@ -35,6 +36,7 @@ HEADERS += \
     fieldpoints.h \
     fieldview.h \
     fieldviewitem.h \
+    graphics_view_zoom.h \
     mainwindow.h \
     model.h
 

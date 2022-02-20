@@ -18,6 +18,7 @@
 #include "controller.h"
 #include "fieldview.h"
 #include "IAircraftObserver.h"
+#include "graphics_view_zoom.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -37,6 +38,8 @@ private:
     Ui::MainWindow *ui;
 
     FieldView *m_FieldView;
+
+    Graphics_view_zoom* m_ViewZoom;
 
     IModel &m_Model;
     IController &m_Controller;

@@ -82,15 +82,15 @@ void Aircraft::calculateShifts(int timerTickValue) {
 
     double pathShift = m_Velocity / (1000 / timerTickValue);
 
-    double xShift = (pathShift * std::cos(angle * PI / 180)) /*/ Convert::s_MetersInPixel*/;
-    double yShift = (-1) * (pathShift * std::sin(angle * PI / 180)) /*/ Convert::s_MetersInPixel*/;
+    double xShift = (pathShift * std::cos(angle * PI / 180)) / Convert::s_MetersInPixel;
+    double yShift = (-1) * (pathShift * std::sin(angle * PI / 180)) / Convert::s_MetersInPixel;
 
     m_XShift = xShift;
     m_YShift = yShift;
 }
 
 bool Aircraft::isAircraftAtPoint(CDPoint point) {
-    return (std::abs(m_X - point.x()) < 10 && std::abs(m_Y - point.y()) < 10);
+    return (std::abs(m_X - point.x()) < 2 && std::abs(m_Y - point.y()) < 2);
 }
 
 CDPoint Aircraft::getNextPathPoint(CDPoint point) {
@@ -102,7 +102,29 @@ CDPoint Aircraft::getNextPathPoint(CDPoint point) {
     throw std::invalid_argument("The argument point is not contained in the aircraft path");
 }
 
+int Aircraft::getDangerRadius() {
+    return m_DangerRadius;
+}
 
+int Aircraft::getImageWidth() {
+    return m_ImageWidth;
+}
+
+int Aircraft::getImageHeight() {
+    return m_ImageHeight;
+}
+
+int Aircraft::getISZ_Width() {
+    return m_ISZ_Width;
+}
+
+int Aircraft::getISZ_Length() {
+    return m_ISZ_Length;
+}
+
+int Aircraft::get_IPSZ_Length() {
+    return Convert::ConvertMetersToPixels(m_Velocity * m_PredictingInterval);
+}
 
 
 

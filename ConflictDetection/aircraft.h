@@ -30,6 +30,14 @@ public:
 
     void updateData(int timerTickValue) override;
 
+    int getDangerRadius();
+
+    int getImageWidth();
+    int getImageHeight();
+
+    int getISZ_Width();
+    int getISZ_Length();
+
 private:
     void handleArrivalToEndPoint();
 
@@ -41,6 +49,8 @@ private:
     bool isAircraftAtPoint(CDPoint point);
 
     CDPoint getNextPathPoint(CDPoint point);
+
+    int get_IPSZ_Length();
 
 private:
     std::vector<IAircraftObserver*> m_AircraftObservers;
@@ -66,6 +76,9 @@ private:
     int m_ISZ_Width = 1500;
     int m_ISZ_Length = 1500;
 
+    // Интервал времени прогнозирования, с.
+    int m_PredictingInterval = 30;
+
     // Допуски на вертикальное и горизонтальное эшелонировавние соответственно, в метрах.
     int m_SecurityVertical = 300;
     int m_SecurityHorizontal = 2000;
@@ -82,6 +95,9 @@ private:
     double m_YShift;
 
     int m_TimerTickValue;
+
+    int m_ImageWidth = 10;
+    int m_ImageHeight = 10;
 };
 
 #endif // AIRCRAFT_H

@@ -14,7 +14,8 @@ MainWindow::MainWindow(IModel &model, IController &controller, QWidget *parent) 
     standardOptions();
     initViewElements();
 
-
+    m_ViewZoom = new Graphics_view_zoom(m_FieldView);
+    m_ViewZoom->set_modifiers(Qt::NoModifier);
 
     connect(m_TimerStopwatch, SIGNAL(timeout()), this, SLOT(slotTimerStopwatchTick()));
 
