@@ -13,10 +13,12 @@ Aircraft::Aircraft(std::string id, AircraftPath path, IAircraftObserver* observe
     m_Y = m_Path.getPath()[0].y();
     m_Z = m_Path.getPath()[0].z();
 
-    image = QPixmap(":/resources/img/aircraft.png");
+    image = QPixmap(":/resources/img/aircraft2.png");
 
     m_TimerTickValue = timerTickValue;
     calculateShifts(timerTickValue);
+
+
 }
 
 void Aircraft::updateData(int timerTickValue) {
@@ -45,6 +47,30 @@ double Aircraft::z() const {
 
 AircraftPath& Aircraft::getPath() {
     return m_Path;
+}
+
+int Aircraft::getDangerRadius() {
+    return m_DangerRadius;
+}
+
+int Aircraft::getImageWidth() {
+    return m_ImageWidth;
+}
+
+int Aircraft::getImageHeight() {
+    return m_ImageHeight;
+}
+
+int Aircraft::getISZ_Width() {
+    return m_ISZ_Width;
+}
+
+int Aircraft::getISZ_Length() {
+    return m_ISZ_Length;
+}
+
+int Aircraft::get_IPSZ_Length() {
+    return Convert::ConvertMetersToPixels(m_Velocity * m_PredictingInterval);
 }
 
 double Aircraft::getHorizontalAngle() {
@@ -102,32 +128,25 @@ CDPoint Aircraft::getNextPathPoint(CDPoint point) {
     throw std::invalid_argument("The argument point is not contained in the aircraft path");
 }
 
-int Aircraft::getDangerRadius() {
-    return m_DangerRadius;
+bool Aircraft::isAircraftPotentiallyDangerous(const Aircraft& aircraft) {
+    return std::pow(aircraft.x() - x(), 2) + std::pow(aircraft.y() - y(), 2) <= std::pow(m_DangerRadius, 2);
 }
 
-int Aircraft::getImageWidth() {
-    return m_ImageWidth;
+void Aircraft::addPotentiallyDangerousAircraft(Aircraft& aircraft) {
+    m_PotentiallyDangerousAircrafts.push_back(aircraft);
 }
 
-int Aircraft::getImageHeight() {
-    return m_ImageHeight;
+void Aircraft::removePotentiallyDangerousAircraft(const Aircraft& aircraft) {
+    auto it = std::remove(m_PotentiallyDangerousAircrafts.begin(), m_PotentiallyDangerousAircrafts.end(), aircraft);
 }
 
-int Aircraft::getISZ_Width() {
-    return m_ISZ_Width;
+bool operator==(const Aircraft& a1, const Aircraft& a2) {
+    return a1.getId() == a2.getId();
 }
 
-int Aircraft::getISZ_Length() {
-    return m_ISZ_Length;
+bool operator!=(const Aircraft& a1, const Aircraft& a2) {
+    return !(a1 == a2);
 }
-
-int Aircraft::get_IPSZ_Length() {
-    return Convert::ConvertMetersToPixels(m_Velocity * m_PredictingInterval);
-}
-
-
-
 
 
 

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <QPixmap>
+#include <QVector>
 
 #include "IAircraftTimerObserver.h"
 #include "cdpoint.h"
@@ -38,6 +39,16 @@ public:
     int getISZ_Width();
     int getISZ_Length();
 
+    int get_IPSZ_Length();
+
+    bool isAircraftPotentiallyDangerous(const Aircraft& aircraft);
+
+    void addPotentiallyDangerousAircraft(Aircraft& aircraft);
+    void removePotentiallyDangerousAircraft(const Aircraft& aircraft);
+
+    friend bool operator==(const Aircraft& a1, const Aircraft& a2);
+    friend bool operator!=(const Aircraft& a1, const Aircraft& a2);
+
 private:
     void handleArrivalToEndPoint();
 
@@ -50,7 +61,7 @@ private:
 
     CDPoint getNextPathPoint(CDPoint point);
 
-    int get_IPSZ_Length();
+
 
 private:
     std::vector<IAircraftObserver*> m_AircraftObservers;
@@ -98,6 +109,8 @@ private:
 
     int m_ImageWidth = 10;
     int m_ImageHeight = 10;
+
+    QVector<std::reference_wrapper<Aircraft>> m_PotentiallyDangerousAircrafts {};
 };
 
 #endif // AIRCRAFT_H

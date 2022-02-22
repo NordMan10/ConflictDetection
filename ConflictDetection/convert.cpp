@@ -1,7 +1,7 @@
 #include "convert.h"
 
-int Convert::s_FieldWidth = 1440;
-int Convert::s_FieldHeight = 810;
+int Convert::s_FieldWidth = 1680; //1440
+int Convert::s_FieldHeight = 1000; // 810
 
 int Convert::s_RightFieldBorder = 440000;
 

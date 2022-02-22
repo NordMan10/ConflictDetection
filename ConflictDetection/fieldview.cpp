@@ -33,7 +33,7 @@ void FieldView::standardOptions() {
 
     //resize(QDesktopWidget().availableGeometry(this).size());
     //qDebug() << width() << ", " << height();
-    setSceneRect(0, 0, 1440, 810);
+    setSceneRect(0, 0, Convert::s_FieldWidth, Convert::s_FieldHeight);
     setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
     //setFixedSize(this->size().width(), this->size().height());
 

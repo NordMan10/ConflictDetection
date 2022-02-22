@@ -9,7 +9,8 @@ Model::Model() :
     m_TimerAircraftsMotion = new QTimer();
 
     QObject::connect(m_TimerAircraftsMotion, &QTimer::timeout, this, &Model::notifyAircraftTimerObservers);
-    //connect(m_TimerAircraftsMotion, SIGNAL(timeout()), this, SLOT(notifyAircraftTimerObservers()));
+
+
 }
 
 std::vector<CDPoint>& Model::getZonePoints() {
@@ -94,12 +95,22 @@ void Model::removeAircraftTimerObserver(IAircraftTimerObserver* observer) {
 }
 
 void Model::notifyAircraftTimerObservers() {
-    for (int i = 0; i < m_AircraftTimerObservers.size(); i++)
-    {
+    for (int i = 0; i < m_AircraftTimerObservers.size(); i++) {
         m_AircraftTimerObservers[i]->updateData(m_TimerAircraftsMotionTickValue);
     }
 
+    // В этот метод передается -1, поскольку интерфейс, к которому принадлежит данный метод,
+    // используется и классом MainWindow (Представлением), и моделью. В модели нужно принимать число,
+    // в Представлении нет. Такие дела.
     m_AircraftObserver->updateAircraftData(-1);
+
+    for (int i = 0; i < m_Aircrafts.size() - 1; i++) {
+        for (int j = i + 1; j < m_Aircrafts.size(); j++) {
+            if (m_Aircrafts[i]->isAircraftPotentiallyDangerous(*m_Aircrafts[j])) {
+                m_Aircrafts[i]->addPotentiallyDangerousAircraft(*m_Aircrafts[j]);
+            }
+        }
+    }
 }
 
 void Model::registerAircraftsObserver(IAircraftObserver* observer) {

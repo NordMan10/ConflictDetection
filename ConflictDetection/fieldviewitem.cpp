@@ -14,12 +14,6 @@ QRectF FieldViewItem::boundingRect() const {
 }
 
 void FieldViewItem::paint(QPainter *painter, const QStyleOptionGraphicsItem */*option*/, QWidget */*widget*/) {
-    //painter->setPen(QPen(Qt::black, 3));
-
-    //painter->drawRect(0, 0, m_Width, m_Height);
-
-//    QPixmap aircraftPicture(":/resources/img/aircraft.png");
-
 //    painter->save();
 //    painter->translate(50, 50);
 //    painter->rotate(45);
@@ -103,7 +97,11 @@ void FieldViewItem::drawAircrafts(QPainter* painter) {
         // Image drawing
         painter->save();
         painter->translate(m_Aircrafts[i]->x(), m_Aircrafts[i]->y());
-        painter->rotate((m_Aircrafts[i]->getHorizontalAngle() * -1) + 45);
+        // Домножаем на -1, поскольку функция rotate() поворачивает программную с.к. по часовой
+        // стрелке, тогда как пользовательская функция getHorizontalAngle() возвращает значение
+        // угла в соответствии с правилами тригонометрии (положительный угол приводит к вращению
+        // против часовой стрелки.
+        painter->rotate((m_Aircrafts[i]->getHorizontalAngle() * -1));
         painter->drawPixmap((-1) * m_Aircrafts[i]->getImageWidth() / 2,
                             (-1) * m_Aircrafts[i]->getImageHeight() / 2,
                             m_Aircrafts[i]->getImageWidth(), m_Aircrafts[i]->getImageHeight(),
@@ -119,14 +117,20 @@ void FieldViewItem::drawAircrafts(QPainter* painter) {
                              radiusInPixels * 2,
                              radiusInPixels * 2);
 
-        // ISZ drawing
+        // ISZ and IPSZ drawing
+        painter->setPen(QPen(Qt::black, 0.3, Qt::SolidLine));
+
         painter->save();
         painter->translate(m_Aircrafts[i]->x(), m_Aircrafts[i]->y());
-        painter->rotate((m_Aircrafts[i]->getHorizontalAngle() * -1) + 45);
+        // Доворот на 90 градусов нужен для ориентации с.к. по ходу движения ВС.
+        painter->rotate(((-1) * m_Aircrafts[i]->getHorizontalAngle()) + 90);
 
         int ISZ_Width = Convert::ConvertMetersToPixels(m_Aircrafts[i]->getISZ_Width());
         int ISZ_Length = Convert::ConvertMetersToPixels(m_Aircrafts[i]->getISZ_Length());
-        painter->drawRect(ISZ_Width / 2, ISZ_Length / 2, ISZ_Width, ISZ_Length);
+        painter->drawRect(((-1) * ISZ_Width / 2), ((-1) * ISZ_Length / 2), ISZ_Width, ISZ_Length);
+
+        int IPSZ_Length = m_Aircrafts[i]->get_IPSZ_Length();
+        painter->drawRect((-1) * ISZ_Width / 2, ((-1) * IPSZ_Length) + (ISZ_Length / 2), ISZ_Width, IPSZ_Length);
         painter->restore();
     }
 }
