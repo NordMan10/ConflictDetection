@@ -10,10 +10,11 @@ class Convert
 public:
     Convert() = delete;
 
-    static int ConvertMetersToPixels(int meters);
+    static double ConvertMetersToPixels(int meters);
 
     // Координаты передавать именно по тем осям, которые заданы в параметрах: сначала по оси Z,
     // которая горизонтальная, затем по оси X, которая вертикальная (особенности схемы)
+    static std::tuple<int, int> TransformCoordsFromSchemeToProgramWithConvert(int z, int x);
     static std::tuple<int, int> TransformCoordsFromSchemeToProgram(int z, int x);
 
 public:

@@ -22,6 +22,10 @@ public:
     int y();
     int z();
 
+    int x_inMeters();
+    int y_inMeters();
+    int z_inMeters();
+
     //CDPointType getType();
 
     friend bool operator==(const CDPoint& p1, const CDPoint& p2);
@@ -33,6 +37,10 @@ private:
     int m_X;
     int m_Y;
     int m_Z;
+
+    int m_X_inMeters;
+    int m_Y_inMeters;
+    int m_Z_inMeters;
 
     //CDPointType m_Type;
 

@@ -7,12 +7,19 @@ CDPoint::CDPoint(int x, int y, int z, bool rawCoords)
 
     if (rawCoords) {
         auto coords = Convert::TransformCoordsFromSchemeToProgram(x, y);
+        m_X_inMeters = std::get<0>(coords);
+        m_Y_inMeters = std::get<1>(coords);
+        m_Z_inMeters = z;
+
+        coords = Convert::TransformCoordsFromSchemeToProgramWithConvert(x, y);
         m_X = std::get<0>(coords);
         m_Y = std::get<1>(coords);
+        m_Z = Convert::ConvertMetersToPixels(z);
     }
     else {
         m_X = x;
         m_Y = y;
+        m_Z = z;
     }
 }
 
@@ -31,5 +38,19 @@ int CDPoint::x() { return m_X; }
 int CDPoint::y() { return m_Y; }
 
 int CDPoint::z() { return m_Z; }
+
+
+int CDPoint::x_inMeters() {
+    return m_X_inMeters;
+}
+
+int CDPoint::y_inMeters() {
+    return m_Y_inMeters;
+}
+
+int CDPoint::z_inMeters() {
+    return m_Z_inMeters;
+}
+
 
 //CDPointType CDPoint::getType() { return m_Type; }

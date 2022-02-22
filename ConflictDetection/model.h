@@ -84,7 +84,7 @@ private:
     std::vector<AircraftPath> m_AircraftPaths;
 
     QTimer* m_TimerAircraftsMotion;
-    int m_TimerAircraftsMotionTickValue = 50;
+    int m_TimerAircraftsMotionTickValue = 100;
 };
 
 #endif // MODEL_H

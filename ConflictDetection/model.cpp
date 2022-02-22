@@ -106,7 +106,10 @@ void Model::notifyAircraftTimerObservers() {
 
     for (int i = 0; i < m_Aircrafts.size() - 1; i++) {
         for (int j = i + 1; j < m_Aircrafts.size(); j++) {
-            if (m_Aircrafts[i]->isAircraftPotentiallyDangerous(*m_Aircrafts[j])) {
+            auto potDangerousAircrafts = m_Aircrafts[i]->getPotentiallyDangerousAircrafts();
+            if (m_Aircrafts[i]->isAircraftPotentiallyDangerous(*m_Aircrafts[j]) &&
+                    !(m_Aircrafts[i]->contains(m_Aircrafts[i]->getPotentiallyDangerousAircrafts(), *m_Aircrafts[j])))
+            {
                 m_Aircrafts[i]->addPotentiallyDangerousAircraft(*m_Aircrafts[j]);
             }
         }
@@ -118,10 +121,12 @@ void Model::registerAircraftsObserver(IAircraftObserver* observer) {
 }
 
 void Model::createAircraft() {
-    m_Aircrafts.push_back(new Aircraft("A301", m_AircraftPaths[0], this, (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
+    m_Aircrafts.push_back(new Aircraft("A301", m_AircraftPaths[0], this,
+                          (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
     registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
 
-    m_Aircrafts.push_back(new Aircraft("A302", m_AircraftPaths[4], this, (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
+    m_Aircrafts.push_back(new Aircraft("A302", m_AircraftPaths[0], this,
+                          (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
     registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
 }
 

@@ -23,6 +23,10 @@ public:
     double y() const;
     double z() const;
 
+    int x_inMeters() const;
+    int y_inMeters() const;
+    int z_inMeters() const;
+
     QPixmap image;
 
     AircraftPath& getPath();
@@ -43,11 +47,15 @@ public:
 
     bool isAircraftPotentiallyDangerous(const Aircraft& aircraft);
 
+    std::vector<std::reference_wrapper<Aircraft>>& getPotentiallyDangerousAircrafts();
     void addPotentiallyDangerousAircraft(Aircraft& aircraft);
     void removePotentiallyDangerousAircraft(const Aircraft& aircraft);
 
     friend bool operator==(const Aircraft& a1, const Aircraft& a2);
     friend bool operator!=(const Aircraft& a1, const Aircraft& a2);
+
+    //template<typename T>
+    bool contains(std::vector<std::reference_wrapper<Aircraft>> vec, const Aircraft& elem);
 
 private:
     void handleArrivalToEndPoint();
@@ -70,17 +78,21 @@ private:
     // Условный идентификатор ВС, который будет выводится в формуляр
     std::string m_Id;
 
-    // Координаты в программной системе координат, в пикселях
+    // Координаты в программной системе координат, в метрах
     double m_X;
     double m_Y;
-    double m_Z = 3000;
+    double m_Z = Convert::ConvertMetersToPixels(3000);
+
+    double m_X_inMeters;
+    double m_Y_inMeters;
+    double m_Z_inMeters = 3000;
 
     // Момент входа в зону (момент создания ВС) в значении счетчика секундомера.
     // Для вывода нужно конвертировать с помощью QTime::fromMSecsSinceStartOfDay
     int m_EntryMoment;
 
     // Скорость в м/с
-    int m_Velocity = 275;
+    double m_Velocity = 275;
 
     // Размеры ИЗБ по высоте, ширине и длине, в метрах (пока не ясно, это +- или в сумме).
     int m_ISZ_Height = 300;
@@ -105,12 +117,18 @@ private:
     double m_XShift;
     double m_YShift;
 
+    double m_XShift_inMeters;
+    double m_YShift_inMeters;
+
+    double m_VelocityX;
+    double m_VelocityY;
+
     int m_TimerTickValue;
 
     int m_ImageWidth = 10;
     int m_ImageHeight = 10;
 
-    QVector<std::reference_wrapper<Aircraft>> m_PotentiallyDangerousAircrafts {};
+    std::vector<std::reference_wrapper<Aircraft>> m_PotentiallyDangerousAircrafts {};
 };
 
 #endif // AIRCRAFT_H
