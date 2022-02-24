@@ -112,7 +112,7 @@ void FieldViewItem::drawAircrafts(QPainter* painter) {
     for (int i = 0; i < m_Aircrafts.size(); i++) {
         // Image drawing
         painter->save();
-        painter->translate(Convert::ConvertMetersToPixels(m_Aircrafts[i]->x_inMeters()),
+        painter->translate(m_Aircrafts[i]->x(),
                            m_Aircrafts[i]->y());
         // Домножаем на -1, поскольку функция rotate() поворачивает программную с.к. по часовой
         // стрелке, тогда как пользовательская функция getHorizontalAngle() возвращает значение

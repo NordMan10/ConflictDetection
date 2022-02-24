@@ -125,7 +125,7 @@ void Model::createAircraft() {
                           (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
     registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
 
-    m_Aircrafts.push_back(new Aircraft("A302", m_AircraftPaths[0], this,
+    m_Aircrafts.push_back(new Aircraft("A302", m_AircraftPaths[4], this,
                           (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
     registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
 }
