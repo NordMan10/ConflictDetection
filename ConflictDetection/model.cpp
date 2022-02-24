@@ -53,7 +53,7 @@ void Model::initZonePoints() {
 
 void Model::initPathPoints() {
     m_PathPoints.push_back(CDPoint(70000, -44000));
-    m_PathPoints.push_back(CDPoint(90000, -79000));
+    m_PathPoints.push_back(CDPoint(67000, -47000));
     m_PathPoints.push_back(CDPoint(150000, -108000));
     m_PathPoints.push_back(CDPoint(300000, -180500));
     m_PathPoints.push_back(CDPoint(397000, -60000));
@@ -104,6 +104,10 @@ void Model::notifyAircraftTimerObservers() {
     // в Представлении нет. Такие дела.
     m_AircraftObserver->updateAircraftData(-1);
 
+    checkPotentiallyDangerousAircrafts();
+}
+
+void Model::checkPotentiallyDangerousAircrafts() {
     for (int i = 0; i < m_Aircrafts.size() - 1; i++) {
         for (int j = i + 1; j < m_Aircrafts.size(); j++) {
             auto potDangerousAircrafts = m_Aircrafts[i]->getPotentiallyDangerousAircrafts();
@@ -125,7 +129,7 @@ void Model::createAircraft() {
                           (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
     registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
 
-    m_Aircrafts.push_back(new Aircraft("A302", m_AircraftPaths[4], this,
+    m_Aircrafts.push_back(new Aircraft("A302", m_AircraftPaths[1], this,
                           (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
     registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
 }

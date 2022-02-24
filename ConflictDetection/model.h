@@ -63,7 +63,7 @@ private:
 
     void notifyAircraftTimerObservers();
 
-
+    void checkPotentiallyDangerousAircrafts();
 
 private:
     std::vector<CDPoint> m_ZonePoints;

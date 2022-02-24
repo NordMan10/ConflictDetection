@@ -18,13 +18,13 @@ public:
 
     //int getId();
 
-    int x();
-    int y();
-    int z();
+    int x() const ;
+    int y() const ;
+    int z() const ;
 
-    int x_inMeters();
-    int y_inMeters();
-    int z_inMeters();
+    int x_inMeters() const ;
+    int y_inMeters() const ;
+    int z_inMeters() const ;
 
     //CDPointType getType();
 

@@ -33,22 +33,22 @@ bool operator!=(const CDPoint& p1, const CDPoint& p2) {
 
 //int CDPoint::getId() { return m_Id; }
 
-int CDPoint::x() { return m_X; }
+int CDPoint::x() const { return m_X; }
 
-int CDPoint::y() { return m_Y; }
+int CDPoint::y() const { return m_Y; }
 
-int CDPoint::z() { return m_Z; }
+int CDPoint::z() const { return m_Z; }
 
 
-int CDPoint::x_inMeters() {
+int CDPoint::x_inMeters() const {
     return m_X_inMeters;
 }
 
-int CDPoint::y_inMeters() {
+int CDPoint::y_inMeters() const {
     return m_Y_inMeters;
 }
 
-int CDPoint::z_inMeters() {
+int CDPoint::z_inMeters() const {
     return m_Z_inMeters;
 }
 

@@ -17,7 +17,11 @@ class Aircraft : public IAircraftTimerObserver
 public:
     Aircraft(std::string id, AircraftPath path, IAircraftObserver* observer, int aircraftListIndex, int timerTickValue);
 
+    void initGraphicsItems();
+
     std::string getId() const;
+
+    QPixmap& getImage();
 
     double x() const;
     double y() const;
@@ -27,23 +31,25 @@ public:
     int y_inMeters() const;
     int z_inMeters() const;
 
-    QPixmap image;
-
     AircraftPath& getPath();
 
-    double getHorizontalAngle();
+    double getHorizontalAngle() const;
 
     void updateData(int timerTickValue) override;
 
-    int getDangerRadius();
+    int getDangerRadius() const;
 
-    int getImageWidth();
-    int getImageHeight();
+    int getImageWidth() const;
+    int getImageHeight() const;
 
-    int getISZ_Width();
-    int getISZ_Length();
+    int getISZ_Width() const;
+    int getISZ_Length() const;
 
-    int get_IPSZ_Length();
+    int get_IPSZ_Length() const;
+
+    double getVelocityX() const;
+    double getVelocityY() const;
+    double getVelocityZ() const;
 
     bool isAircraftPotentiallyDangerous(const Aircraft& aircraft);
 
@@ -54,8 +60,12 @@ public:
     friend bool operator==(const Aircraft& a1, const Aircraft& a2);
     friend bool operator!=(const Aircraft& a1, const Aircraft& a2);
 
-    //template<typename T>
     bool contains(std::vector<std::reference_wrapper<Aircraft>> vec, const Aircraft& elem);
+
+    QRect& get_ISZ_Rectangle();
+    QRect& get_IPSZ_Rectangle();
+
+    bool isInConflict() const;
 
 private:
     void handleArrivalToEndPoint();
@@ -69,7 +79,15 @@ private:
 
     CDPoint getNextPathPoint(CDPoint point);
 
+    void conflictDetection();
 
+    bool isSeparationStandardsViolated(double delta_X, double delta_Y, double delta_Z);
+
+    double getDistanceDerivative(double delta_X, double delta_Y, double delta_Z,
+                                 double delta_Vx, double delta_Vy, double delta_Vz);
+
+    bool isLinesIntersect(QLine line1, QLine line2);
+    bool isRectanglesIntersect(QRect rect1, QRect rect2);
 
 private:
     std::vector<IAircraftObserver*> m_AircraftObservers;
@@ -77,6 +95,8 @@ private:
 
     // Условный идентификатор ВС, который будет выводится в формуляр
     std::string m_Id;
+
+    QPixmap m_Image;
 
     // Координаты в программной системе координат, в метрах
     double m_X;
@@ -99,12 +119,16 @@ private:
     int m_ISZ_Width = 1500;
     int m_ISZ_Length = 1500;
 
+    QRect m_ISZ_Rectangle;
+
+    QRect m_IPSZ_Rectangle;
+
     // Интервал времени прогнозирования, с.
     int m_PredictingInterval = 30;
 
     // Допуски на вертикальное и горизонтальное эшелонировавние соответственно, в метрах.
-    int m_SecurityVertical = 300;
-    int m_SecurityHorizontal = 2000;
+    int m_SeparationStandardV = 300;
+    int m_SeparationStandardHor = 2000;
 
     // Радиус в метрах
     int m_DangerRadius = 5000;
@@ -122,6 +146,7 @@ private:
 
     double m_VelocityX;
     double m_VelocityY;
+    double m_VelocityZ;
 
     int m_TimerTickValue;
 
@@ -129,6 +154,8 @@ private:
     int m_ImageHeight = 10;
 
     std::vector<std::reference_wrapper<Aircraft>> m_PotentiallyDangerousAircrafts {};
+
+    bool m_IsInConflict = false;
 };
 
 #endif // AIRCRAFT_H
