@@ -136,9 +136,9 @@ void FieldViewItem::drawAircrafts(QPainter* painter) {
 
         // ISZ and IPSZ drawing
         if (m_Aircrafts[i]->isInConflict()) {
-            painter->setPen(QPen(Qt::black, 0.3, Qt::SolidLine));
-        } else {
             painter->setPen(QPen(Qt::red, 0.3, Qt::SolidLine));
+        } else {
+            painter->setPen(QPen(Qt::black, 0.3, Qt::SolidLine));
         }
 
         painter->save();

@@ -98,16 +98,6 @@ int Aircraft::get_IPSZ_Length() const {
     return m_Velocity * m_PredictingInterval;
 }
 
-double Aircraft::getHorizontalAngle() const {
-    // Попробуй поменять на метры
-    int dx = (m_ActivePathStartPoint.x() - m_ActivePathEndPoint.x()) * (-1);
-    int dy = m_ActivePathStartPoint.y() - m_ActivePathEndPoint.y();
-
-    double angle = std::atan2(dy, dx) * 180 / PI;
-
-    return angle;
-}
-
 double Aircraft::getVelocityX() const {
     return m_VelocityX;
 }
@@ -128,11 +118,21 @@ QRect& Aircraft::get_IPSZ_Rectangle() {
     return m_IPSZ_Rectangle;
 }
 
+double Aircraft::getHorizontalAngle() const {
+    // Попробуй поменять на метры
+    int dx = (m_ActivePathStartPoint.x() - m_ActivePathEndPoint.x()) * (-1);
+    int dy = m_ActivePathStartPoint.y() - m_ActivePathEndPoint.y();
+
+    double angle = std::atan2(dy, dx) * 180 / PI;
+
+    return angle;
+}
+
 void Aircraft::calculateShifts(int timerTickValue) {
     auto angleHor = getHorizontalAngle();
 
-    m_VelocityX = (m_Velocity * std::cos(angleHor * PI / 180)) / (double)(1000 / timerTickValue);
-    m_VelocityY = (-1) * (m_Velocity * std::sin(angleHor * PI / 180)) / (double)(1000 / timerTickValue);
+    m_VelocityX = (m_Velocity * std::cos(angleHor * PI / 180));
+    m_VelocityY = (-1) * (m_Velocity * std::sin(angleHor * PI / 180));
     //m_VelocityZ = (m_Velocity * std::sin(angleV * PI / 180)) / (double)(1000 / timerTickValue);
 
     //double pathShift = m_Velocity / (double)(1000 / timerTickValue);
@@ -140,11 +140,14 @@ void Aircraft::calculateShifts(int timerTickValue) {
     //double xShift_inMeters = (pathShift * std::cos(angle * PI / 180));
     //double yShift_inMeters = (-1) * (pathShift * std::sin(angle * PI / 180));
 
-    m_XShift_inMeters = m_VelocityX;
-    m_YShift_inMeters = m_VelocityY;
+    double velocityXForShift = m_VelocityX / (double)(1000 / timerTickValue);
+    double velocityYForShift = m_VelocityY / (double)(1000 / timerTickValue);
 
-    m_XShift = m_VelocityX / Convert::s_MetersInPixel;
-    m_YShift = m_VelocityY / Convert::s_MetersInPixel;
+    m_XShift_inMeters = velocityXForShift;
+    m_YShift_inMeters = velocityYForShift;
+
+    m_XShift = velocityXForShift / Convert::s_MetersInPixel;
+    m_YShift = velocityYForShift / Convert::s_MetersInPixel;
 }
 
 void Aircraft::updateData(int timerTickValue) {
@@ -239,36 +242,41 @@ bool Aircraft::contains(std::vector<std::reference_wrapper<Aircraft>> vec, const
 }
 
 void Aircraft::conflictDetection() {
-    // In the model, conflicting aircrafts are added to the list
+    // In the model, conflicting aircrafts are added to the list by dangerous radius.
     // Check bounds violation
     for (int i = 0; i < m_PotentiallyDangerousAircrafts.size(); i++) {
         Aircraft& potDangerousAircraft = m_PotentiallyDangerousAircrafts[i];
 
         // Base variables calculation.
-        double delta_X = std::abs(x_inMeters() - potDangerousAircraft.x_inMeters());
-        double delta_Y = std::abs(y_inMeters() - potDangerousAircraft.y_inMeters());
-        double delta_Z = std::abs(z_inMeters() - potDangerousAircraft.z_inMeters());
+        double delta_X = potDangerousAircraft.x_inMeters() - x_inMeters();
+        double delta_Y = potDangerousAircraft.y_inMeters() - y_inMeters();
+        double delta_Z = potDangerousAircraft.z_inMeters() - z_inMeters();
 
-        double delta_Vx = std::abs(m_VelocityX - potDangerousAircraft.getVelocityX());
-        double delta_Vy = std::abs(m_VelocityY - potDangerousAircraft.getVelocityY());
-        double delta_Vz = std::abs(m_VelocityZ - potDangerousAircraft.getVelocityZ());
+        double delta_Vx = potDangerousAircraft.getVelocityX() - m_VelocityX;
+        double delta_Vy = potDangerousAircraft.getVelocityY() - m_VelocityY;
+        double delta_Vz = potDangerousAircraft.getVelocityZ() - m_VelocityZ;
 
         if (isSeparationStandardsViolated(delta_X, delta_Y, delta_Z)) {
             m_IsInConflict = true;
+            potDangerousAircraft.setInConflict(true);
             continue;
         }
-        // Derivative calculation. In theory, the derivative need to use in visualization...
+        // Derivative calculation. In theory, the derivative sign need to use in visualization...
         double distanceDerivative = getDistanceDerivative(delta_X, delta_Y, delta_Z, delta_Vx, delta_Vy, delta_Vz);
         if (distanceDerivative > 0) {
             m_IsInConflict = false;
+            potDangerousAircraft.setInConflict(false);
+            // После этого можно проверок не делать
         }
+
 
         // Check IPSZ intersection
         if (m_IPSZ_Rectangle.intersects(potDangerousAircraft.get_IPSZ_Rectangle())) {
             // Inverval of minimal distance calculation and vertical and horizontal distance calculation
-            double tau_min = (-1) * ((delta_X * delta_Vx + delta_Y * delta_Vy + delta_Z * delta_Vz) /
-                                     (std::pow(delta_Vx, 2) + std::pow(delta_Vy, 2) + std::pow(delta_Vz, 2)));
+            double tau_min = (-1) * ((delta_X * delta_Vx + delta_Y * delta_Vy + delta_Z * delta_Vz)) /
+                                     (std::pow(delta_Vx, 2) + std::pow(delta_Vy, 2) + std::pow(delta_Vz, 2));
 
+            auto temp = tau_min;
             double thisX_tau_min = m_VelocityX * tau_min;
             double thisY_tau_min = m_VelocityY * tau_min;
             double thisZ_tau_min = m_VelocityZ * tau_min;
@@ -277,15 +285,17 @@ void Aircraft::conflictDetection() {
             double y_tau_min = potDangerousAircraft.getVelocityY() * tau_min;
             double z_tau_min = potDangerousAircraft.getVelocityZ() * tau_min;
 
-            double delta_X_tau_min = std::abs(thisX_tau_min - x_tau_min);
-            double delta_Y_tau_min = std::abs(thisY_tau_min - y_tau_min);
-            double delta_Z_tau_min = std::abs(thisZ_tau_min - z_tau_min);
+            double delta_X_tau_min = x_tau_min - thisX_tau_min;
+            double delta_Y_tau_min = y_tau_min - thisY_tau_min;
+            double delta_Z_tau_min = z_tau_min - thisZ_tau_min;
 
             // Check bounds violation
             if (isSeparationStandardsViolated(delta_X_tau_min, delta_Y_tau_min, delta_Z_tau_min)) {
                 m_IsInConflict = true;
+                potDangerousAircraft.setInConflict(true);
             } else {
                 m_IsInConflict = false;
+                potDangerousAircraft.setInConflict(false);
             }
 
         }
@@ -299,6 +309,7 @@ void Aircraft::conflictDetection() {
 
 bool Aircraft::isSeparationStandardsViolated(double delta_X, double delta_Y, double delta_Z) {
     double horDistance = std::sqrt(std::pow(delta_X, 2) + std::pow(delta_Y, 2));
+    auto temp = horDistance;
     return delta_Z <= m_SeparationStandardV && horDistance <= m_SeparationStandardHor;
 }
 
@@ -329,7 +340,9 @@ bool Aircraft::isInConflict() const {
     return m_IsInConflict;
 }
 
-
+void Aircraft::setInConflict(bool value) {
+    m_IsInConflict = value;
+}
 
 
 

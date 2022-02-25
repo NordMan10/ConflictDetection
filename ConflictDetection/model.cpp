@@ -100,7 +100,7 @@ void Model::notifyAircraftTimerObservers() {
     }
 
     // В этот метод передается -1, поскольку интерфейс, к которому принадлежит данный метод,
-    // используется и классом MainWindow (Представлением), и моделью. В модели нужно принимать число,
+    // используется и классом MainWindow (Представлением), и Моделью. В модели нужно принимать число,
     // в Представлении нет. Такие дела.
     m_AircraftObserver->updateAircraftData(-1);
 
@@ -112,9 +112,12 @@ void Model::checkPotentiallyDangerousAircrafts() {
         for (int j = i + 1; j < m_Aircrafts.size(); j++) {
             auto potDangerousAircrafts = m_Aircrafts[i]->getPotentiallyDangerousAircrafts();
             if (m_Aircrafts[i]->isAircraftPotentiallyDangerous(*m_Aircrafts[j]) &&
-                    !(m_Aircrafts[i]->contains(m_Aircrafts[i]->getPotentiallyDangerousAircrafts(), *m_Aircrafts[j])))
+                    !(m_Aircrafts[i]->contains(potDangerousAircrafts, *m_Aircrafts[j])))
             {
                 m_Aircrafts[i]->addPotentiallyDangerousAircraft(*m_Aircrafts[j]);
+            } else if (!m_Aircrafts[i]->isAircraftPotentiallyDangerous(*m_Aircrafts[j]) &&
+                       (m_Aircrafts[i]->contains(potDangerousAircrafts, *m_Aircrafts[j]))) {
+                m_Aircrafts[i]->removePotentiallyDangerousAircraft(*m_Aircrafts[j]);
             }
         }
     }

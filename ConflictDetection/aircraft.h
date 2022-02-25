@@ -66,6 +66,7 @@ public:
     QRect& get_IPSZ_Rectangle();
 
     bool isInConflict() const;
+    void setInConflict(bool value);
 
 private:
     void handleArrivalToEndPoint();
@@ -114,17 +115,17 @@ private:
     // Скорость в м/с
     double m_Velocity = 275;
 
-    // Размеры ИЗБ по высоте, ширине и длине, в метрах (пока не ясно, это +- или в сумме).
+    // Размеры ИЗБ по высоте, ширине и длине, в метрах (это +-).
     int m_ISZ_Height = 300;
     int m_ISZ_Width = 1500;
     int m_ISZ_Length = 1500;
 
     QRect m_ISZ_Rectangle;
 
-    QRect m_IPSZ_Rectangle;
+    QRect m_IPSZ_Rectangle; // Если пересекаются, то оранжевым, если фактический конфликт, то красным
 
-    // Интервал времени прогнозирования, с.
-    int m_PredictingInterval = 30;
+    // Интервал времени прогнозирования, с. Для БПЛА: 30 с., для самолетов: 90 с.
+    int m_PredictingInterval = 90;
 
     // Допуски на вертикальное и горизонтальное эшелонировавние соответственно, в метрах.
     int m_SeparationStandardV = 300;
@@ -146,7 +147,7 @@ private:
 
     double m_VelocityX;
     double m_VelocityY;
-    double m_VelocityZ;
+    double m_VelocityZ = 0;
 
     int m_TimerTickValue;
 
