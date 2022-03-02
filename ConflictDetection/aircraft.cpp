@@ -30,12 +30,12 @@ void Aircraft::initGraphicsItems() {
     double ISZ_Length = Convert::ConvertMetersToPixels(m_ISZ_Length);
     double IPSZ_Length = Convert::ConvertMetersToPixels(get_IPSZ_Length());
 
-    m_ISZ_Rectangle = QRect(((-1) * Convert::ConvertMetersToPixels(m_ISZ_Width) / 2),
-                            ((-1) * Convert::ConvertMetersToPixels(m_ISZ_Length / 2)),
-                            Convert::ConvertMetersToPixels(m_ISZ_Width),
-                            Convert::ConvertMetersToPixels(m_ISZ_Length));
+    m_ISZ_Rectangle = QRect(((-1) * Convert::ConvertMetersToPixels(m_ISZ_Width)),
+                            ((-1) * Convert::ConvertMetersToPixels(m_ISZ_Length)),
+                            Convert::ConvertMetersToPixels(m_ISZ_Width * 2),
+                            Convert::ConvertMetersToPixels(m_ISZ_Length) * 2);
 
-    m_IPSZ_Rectangle = QRect((-1) * ISZ_Width / 2, ((-1) * IPSZ_Length) + (ISZ_Length / 2), ISZ_Width, IPSZ_Length);
+    m_IPSZ_Rectangle = QRect((-1) * ISZ_Width, ((-1) * IPSZ_Length) + (ISZ_Length), ISZ_Width * 2, IPSZ_Length);
 }
 
 std::string Aircraft::getId() const {
@@ -120,8 +120,8 @@ QRect& Aircraft::get_IPSZ_Rectangle() {
 
 double Aircraft::getHorizontalAngle() const {
     // Попробуй поменять на метры
-    int dx = (m_ActivePathStartPoint.x() - m_ActivePathEndPoint.x()) * (-1);
-    int dy = m_ActivePathStartPoint.y() - m_ActivePathEndPoint.y();
+    int dx = (m_ActivePathStartPoint.x_inMeters() - m_ActivePathEndPoint.x_inMeters()) * (-1);
+    int dy = m_ActivePathStartPoint.y_inMeters() - m_ActivePathEndPoint.y_inMeters();
 
     double angle = std::atan2(dy, dx) * 180 / PI;
 
@@ -198,7 +198,7 @@ CDPoint Aircraft::getNextPathPoint(CDPoint point) {
             return m_Path.getPath()[i + 1];
     }
 
-    throw std::invalid_argument("The argument point is not contained in the aircraft path");
+    throw std::invalid_argument("The argument point is not contained in the aircraft's path");
 }
 
 // Попробуй поменять на метры (расчет в пикселях может давать сильные неточности)
@@ -272,6 +272,8 @@ void Aircraft::conflictDetection() {
 
         // Check IPSZ intersection
         if (m_IPSZ_Rectangle.intersects(potDangerousAircraft.get_IPSZ_Rectangle())) {
+            m_IsZoneIntersects = true;
+            potDangerousAircraft.setIsZoneIntersects(true);
             // Inverval of minimal distance calculation and vertical and horizontal distance calculation
             double tau_min = (-1) * ((delta_X * delta_Vx + delta_Y * delta_Vy + delta_Z * delta_Vz)) /
                                      (std::pow(delta_Vx, 2) + std::pow(delta_Vy, 2) + std::pow(delta_Vz, 2));
@@ -298,6 +300,9 @@ void Aircraft::conflictDetection() {
                 potDangerousAircraft.setInConflict(false);
             }
 
+        } else {
+            m_IsZoneIntersects = false;
+            potDangerousAircraft.setIsZoneIntersects(true);
         }
     }
 
@@ -342,6 +347,14 @@ bool Aircraft::isInConflict() const {
 
 void Aircraft::setInConflict(bool value) {
     m_IsInConflict = value;
+}
+
+bool Aircraft::isZoneIntersects() const {
+    return m_IsZoneIntersects;
+}
+
+void Aircraft::setIsZoneIntersects(bool value) {
+    m_IsZoneIntersects = value;
 }
 
 

@@ -135,14 +135,19 @@ void FieldViewItem::drawAircrafts(QPainter* painter) {
                              radiusInPixels * 2);
 
         // ISZ and IPSZ drawing
+
+
         if (m_Aircrafts[i]->isInConflict()) {
             painter->setPen(QPen(Qt::red, 0.3, Qt::SolidLine));
+        } else if (m_Aircrafts[i]->isZoneIntersects()) {
+            painter->setPen(QPen(QColor("orange"), 0.3, Qt::SolidLine));
         } else {
             painter->setPen(QPen(Qt::black, 0.3, Qt::SolidLine));
         }
 
         painter->save();
         painter->translate(m_Aircrafts[i]->x(), m_Aircrafts[i]->y());
+
         // Доворот на 90 градусов нужен для ориентации с.к. по ходу движения ВС.
         painter->rotate(((-1) * m_Aircrafts[i]->getHorizontalAngle()) + 90);
 

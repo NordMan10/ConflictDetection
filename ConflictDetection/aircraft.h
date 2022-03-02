@@ -68,6 +68,10 @@ public:
     bool isInConflict() const;
     void setInConflict(bool value);
 
+
+    bool isZoneIntersects() const;
+    void setIsZoneIntersects(bool value);
+
 private:
     void handleArrivalToEndPoint();
 
@@ -156,6 +160,7 @@ private:
 
     std::vector<std::reference_wrapper<Aircraft>> m_PotentiallyDangerousAircrafts {};
 
+    bool m_IsZoneIntersects = false;
     bool m_IsInConflict = false;
 };
 
