@@ -20,6 +20,8 @@ Aircraft::Aircraft(std::string id, AircraftPath path, IAircraftObserver* observe
     m_Image = QPixmap(":/resources/img/aircraft2.png");
 
     m_TimerTickValue = timerTickValue;
+
+    calculateHorAngle();
     calculateShifts(timerTickValue);
 
     initGraphicsItems();
@@ -29,6 +31,18 @@ void Aircraft::initGraphicsItems() {
     double ISZ_Width = Convert::ConvertMetersToPixels(m_ISZ_Width);
     double ISZ_Length = Convert::ConvertMetersToPixels(m_ISZ_Length);
     double IPSZ_Length = Convert::ConvertMetersToPixels(get_IPSZ_Length());
+
+    double angleHor = getHorizontalAngle();
+    QPoint p1(Convert::ConvertMetersToPixels((m_ISZ_Length) * std::cos(angleHor * PI / 180)),
+              (-1) * Convert::ConvertMetersToPixels((-m_ISZ_Width) * std::sin(angleHor * PI / 180)));
+    QPoint p2(Convert::ConvertMetersToPixels((-m_ISZ_Length) * std::cos(angleHor * PI / 180)),
+              (-1) * Convert::ConvertMetersToPixels((-m_ISZ_Width) * std::sin(angleHor * PI / 180)));
+    QPoint p3(Convert::ConvertMetersToPixels((-m_ISZ_Length) * std::cos(angleHor * PI / 180)),
+              (-1) * Convert::ConvertMetersToPixels((m_ISZ_Width) * std::sin(angleHor * PI / 180)));
+    QPoint p4(Convert::ConvertMetersToPixels((m_ISZ_Length) * std::cos(angleHor * PI / 180)),
+              (-1) * Convert::ConvertMetersToPixels((m_ISZ_Width) * std::sin(angleHor * PI / 180))) ;
+
+    m_ISZ_Rectangle1 = QPolygon(QVector<QPoint>{p1, p2, p3, p4});
 
     m_ISZ_Rectangle = QRect(((-1) * Convert::ConvertMetersToPixels(m_ISZ_Width)),
                             ((-1) * Convert::ConvertMetersToPixels(m_ISZ_Length)),
@@ -118,18 +132,23 @@ QRect& Aircraft::get_IPSZ_Rectangle() {
     return m_IPSZ_Rectangle;
 }
 
+QPolygon& Aircraft::get_ISZ_Rectangle1() {
+    return m_ISZ_Rectangle1;
+}
+
 double Aircraft::getHorizontalAngle() const {
-    // Попробуй поменять на метры
-    int dx = (m_ActivePathStartPoint.x_inMeters() - m_ActivePathEndPoint.x_inMeters()) * (-1);
-    int dy = m_ActivePathStartPoint.y_inMeters() - m_ActivePathEndPoint.y_inMeters();
+    return m_AngleHor;
+}
 
-    double angle = std::atan2(dy, dx) * 180 / PI;
+void Aircraft::calculateHorAngle() {
+    double dx = (-1) * (m_ActivePathStartPoint.x_inMeters() - m_ActivePathEndPoint.x_inMeters());
+    double dy = m_ActivePathStartPoint.y_inMeters() - m_ActivePathEndPoint.y_inMeters();
 
-    return angle;
+    m_AngleHor = std::atan2(dy, dx) * 180 / PI;
 }
 
 void Aircraft::calculateShifts(int timerTickValue) {
-    auto angleHor = getHorizontalAngle();
+    double angleHor = getHorizontalAngle();
 
     m_VelocityX = (m_Velocity * std::cos(angleHor * PI / 180));
     m_VelocityY = (-1) * (m_Velocity * std::sin(angleHor * PI / 180));
@@ -173,6 +192,7 @@ void Aircraft::handleArrivalToMiddlePoint() {
             m_ActivePathStartPoint = m_ActivePathEndPoint;
             m_ActivePathEndPoint = getNextPathPoint(m_ActivePathStartPoint);
 
+            calculateHorAngle();
             calculateShifts(m_TimerTickValue);
         }
     }
@@ -249,9 +269,11 @@ void Aircraft::conflictDetection() {
 
         // Base variables calculation.
         double delta_X = potDangerousAircraft.x_inMeters() - x_inMeters();
-        double delta_Y = potDangerousAircraft.y_inMeters() - y_inMeters();
+        // Домножение на -1 нужно, так как в формуле ось Y (которая там X) направлена вверх.
+        double delta_Y = /*(-1) * */(potDangerousAircraft.y_inMeters() - y_inMeters());
         double delta_Z = potDangerousAircraft.z_inMeters() - z_inMeters();
 
+        // Вопрос про знаки дельт по скоростям: они должны браться со знаками или без?
         double delta_Vx = potDangerousAircraft.getVelocityX() - m_VelocityX;
         double delta_Vy = potDangerousAircraft.getVelocityY() - m_VelocityY;
         double delta_Vz = potDangerousAircraft.getVelocityZ() - m_VelocityZ;
@@ -263,9 +285,10 @@ void Aircraft::conflictDetection() {
         }
         // Derivative calculation. In theory, the derivative sign need to use in visualization...
         double distanceDerivative = getDistanceDerivative(delta_X, delta_Y, delta_Z, delta_Vx, delta_Vy, delta_Vz);
-        if (distanceDerivative > 0) {
+        if (distanceDerivative >= 0) {
             m_IsInConflict = false;
             potDangerousAircraft.setInConflict(false);
+            //continue;
             // После этого можно проверок не делать
         }
 
@@ -274,35 +297,40 @@ void Aircraft::conflictDetection() {
         if (m_IPSZ_Rectangle.intersects(potDangerousAircraft.get_IPSZ_Rectangle())) {
             m_IsZoneIntersects = true;
             potDangerousAircraft.setIsZoneIntersects(true);
-            // Inverval of minimal distance calculation and vertical and horizontal distance calculation
-            double tau_min = (-1) * ((delta_X * delta_Vx + delta_Y * delta_Vy + delta_Z * delta_Vz)) /
-                                     (std::pow(delta_Vx, 2) + std::pow(delta_Vy, 2) + std::pow(delta_Vz, 2));
 
-            auto temp = tau_min;
-            double thisX_tau_min = m_VelocityX * tau_min;
-            double thisY_tau_min = m_VelocityY * tau_min;
-            double thisZ_tau_min = m_VelocityZ * tau_min;
+            if (m_Tau_min < 0 && distanceDerivative < 0) {
+                // Inverval of minimal distance calculation and vertical and horizontal distance calculation
+                double tau_min = (-1) * ((delta_X * delta_Vx + delta_Y * delta_Vy + delta_Z * delta_Vz)) /
+                                         (std::pow(delta_Vx, 2) + std::pow(delta_Vy, 2) + std::pow(delta_Vz, 2));
+                m_Tau_min = tau_min;
+                qDebug() << "tau_min: " << tau_min;
 
-            double x_tau_min = potDangerousAircraft.getVelocityX() * tau_min;
-            double y_tau_min = potDangerousAircraft.getVelocityY() * tau_min;
-            double z_tau_min = potDangerousAircraft.getVelocityZ() * tau_min;
+                // Возможно дело в знаках скоростей по осям
+                double thisX_tau_min = m_X_inMeters + m_VelocityX * tau_min;
+                double thisY_tau_min = m_Y_inMeters + m_VelocityY * tau_min;
+                double thisZ_tau_min = m_Z_inMeters + m_VelocityZ * tau_min;
 
-            double delta_X_tau_min = x_tau_min - thisX_tau_min;
-            double delta_Y_tau_min = y_tau_min - thisY_tau_min;
-            double delta_Z_tau_min = z_tau_min - thisZ_tau_min;
+                double x_tau_min = potDangerousAircraft.x_inMeters() + potDangerousAircraft.getVelocityX() * tau_min;
+                double y_tau_min = potDangerousAircraft.y_inMeters() + potDangerousAircraft.getVelocityY() * tau_min;
+                double z_tau_min = potDangerousAircraft.z_inMeters() + potDangerousAircraft.getVelocityZ() * tau_min;
 
-            // Check bounds violation
-            if (isSeparationStandardsViolated(delta_X_tau_min, delta_Y_tau_min, delta_Z_tau_min)) {
-                m_IsInConflict = true;
-                potDangerousAircraft.setInConflict(true);
-            } else {
-                m_IsInConflict = false;
-                potDangerousAircraft.setInConflict(false);
+                double delta_X_tau_min = x_tau_min - thisX_tau_min;
+                double delta_Y_tau_min = y_tau_min - thisY_tau_min;
+                double delta_Z_tau_min = z_tau_min - thisZ_tau_min;
+
+                // Check bounds violation
+                if (isSeparationStandardsViolated(delta_X_tau_min, delta_Y_tau_min, delta_Z_tau_min)) {
+                    m_IsInConflict = true;
+                    potDangerousAircraft.setInConflict(true);
+                } else {
+                    m_IsInConflict = false;
+                    potDangerousAircraft.setInConflict(false);
+                }
             }
 
         } else {
             m_IsZoneIntersects = false;
-            potDangerousAircraft.setIsZoneIntersects(true);
+            potDangerousAircraft.setIsZoneIntersects(false);
         }
     }
 
@@ -314,7 +342,8 @@ void Aircraft::conflictDetection() {
 
 bool Aircraft::isSeparationStandardsViolated(double delta_X, double delta_Y, double delta_Z) {
     double horDistance = std::sqrt(std::pow(delta_X, 2) + std::pow(delta_Y, 2));
-    auto temp = horDistance;
+    //double temp = horDistance;
+    qDebug() << "horDistance: " << horDistance;
     return delta_Z <= m_SeparationStandardV && horDistance <= m_SeparationStandardHor;
 }
 

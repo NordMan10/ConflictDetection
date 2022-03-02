@@ -117,7 +117,7 @@ void FieldViewItem::drawAircrafts(QPainter* painter) {
         // стрелке, тогда как пользовательская функция getHorizontalAngle() возвращает значение
         // угла в соответствии с правилами тригонометрии (положительный угол приводит к вращению
         // против часовой стрелки.
-        painter->rotate((m_Aircrafts[i]->getHorizontalAngle() * -1));
+        painter->rotate((-1) * (m_Aircrafts[i]->getHorizontalAngle()));
         painter->drawPixmap((-1) * m_Aircrafts[i]->getImageWidth() / 2,
                             (-1) * m_Aircrafts[i]->getImageHeight() / 2,
                             m_Aircrafts[i]->getImageWidth(), m_Aircrafts[i]->getImageHeight(),
@@ -151,8 +151,13 @@ void FieldViewItem::drawAircrafts(QPainter* painter) {
         // Доворот на 90 градусов нужен для ориентации с.к. по ходу движения ВС.
         painter->rotate(((-1) * m_Aircrafts[i]->getHorizontalAngle()) + 90);
 
-        painter->drawRect(m_Aircrafts[i]->get_ISZ_Rectangle());
+        //painter->drawRect(m_Aircrafts[i]->get_ISZ_Rectangle());
         painter->drawRect(m_Aircrafts[i]->get_IPSZ_Rectangle());
+        painter->restore();
+
+        painter->save();
+        painter->translate(m_Aircrafts[i]->x(), m_Aircrafts[i]->y());
+        painter->drawPolygon(m_Aircrafts[i]->get_ISZ_Rectangle1());
         painter->restore();
     }
 }

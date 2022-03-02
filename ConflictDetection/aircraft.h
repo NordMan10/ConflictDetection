@@ -4,6 +4,8 @@
 #include <string>
 #include <QPixmap>
 #include <QVector>
+#include <QDebug>
+#include <QPolygon>
 
 #include "IAircraftTimerObserver.h"
 #include "cdpoint.h"
@@ -65,6 +67,8 @@ public:
     QRect& get_ISZ_Rectangle();
     QRect& get_IPSZ_Rectangle();
 
+    QPolygon& get_ISZ_Rectangle1();
+
     bool isInConflict() const;
     void setInConflict(bool value);
 
@@ -73,6 +77,8 @@ public:
     void setIsZoneIntersects(bool value);
 
 private:
+    void calculateHorAngle();
+
     void handleArrivalToEndPoint();
 
     void handleArrivalToMiddlePoint();
@@ -103,6 +109,8 @@ private:
 
     QPixmap m_Image;
 
+    double m_AngleHor;
+
     // Координаты в программной системе координат, в метрах
     double m_X;
     double m_Y;
@@ -127,6 +135,8 @@ private:
     QRect m_ISZ_Rectangle;
 
     QRect m_IPSZ_Rectangle; // Если пересекаются, то оранжевым, если фактический конфликт, то красным
+
+    QPolygon m_ISZ_Rectangle1;
 
     // Интервал времени прогнозирования, с. Для БПЛА: 30 с., для самолетов: 90 с.
     int m_PredictingInterval = 90;
@@ -155,10 +165,12 @@ private:
 
     int m_TimerTickValue;
 
-    int m_ImageWidth = 10;
-    int m_ImageHeight = 10;
+    int m_ImageWidth = 5;
+    int m_ImageHeight = 5;
 
     std::vector<std::reference_wrapper<Aircraft>> m_PotentiallyDangerousAircrafts {};
+
+    double m_Tau_min = -1;
 
     bool m_IsZoneIntersects = false;
     bool m_IsInConflict = false;

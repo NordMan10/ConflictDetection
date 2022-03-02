@@ -53,7 +53,7 @@ void Model::initZonePoints() {
 
 void Model::initPathPoints() {
     m_PathPoints.push_back(CDPoint(70000, -44000));
-    m_PathPoints.push_back(CDPoint(67000, -47000));
+    m_PathPoints.push_back(CDPoint(68000, -46000));
     m_PathPoints.push_back(CDPoint(150000, -108000));
     m_PathPoints.push_back(CDPoint(300000, -180500));
     m_PathPoints.push_back(CDPoint(397000, -60000));
