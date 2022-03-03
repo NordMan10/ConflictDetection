@@ -14,11 +14,7 @@ QRectF FieldViewItem::boundingRect() const {
 }
 
 void FieldViewItem::paint(QPainter *painter, const QStyleOptionGraphicsItem */*option*/, QWidget */*widget*/) {
-//    painter->save();
-//    painter->translate(50, 50);
-//    painter->rotate(45);
-//    painter->drawPixmap(-20, -20, 40, 40, aircraftPicture);
-//    painter->restore();
+    drawFieldGrid(painter);
 
     drawZoneLines(painter);
     drawZonePoints(painter);
@@ -108,6 +104,15 @@ void FieldViewItem::drawPathIntersectionPoints(QPainter *painter) {
     }
 }
 
+void FieldViewItem::drawFieldGrid(QPainter *painter) {
+     painter->setPen(QPen(QColor(215, 215, 215), 0.5));
+
+     for (int i = 0; i <= Convert::s_RightFieldBorder; i += 5000) {
+         painter->drawLine(QPoint(0, Convert::ConvertMetersToPixels(i)), QPoint(Convert::ConvertMetersToPixels(Convert::s_RightFieldBorder), Convert::ConvertMetersToPixels(i)));
+         painter->drawLine(QPoint(Convert::ConvertMetersToPixels(i), 0), QPoint(Convert::ConvertMetersToPixels(i), Convert::ConvertMetersToPixels(Convert::s_RightFieldBorder)));
+     }
+}
+
 void FieldViewItem::drawAircrafts(QPainter* painter) {
     for (int i = 0; i < m_Aircrafts.size(); i++) {
         // Image drawing
@@ -135,8 +140,6 @@ void FieldViewItem::drawAircrafts(QPainter* painter) {
                              radiusInPixels * 2);
 
         // ISZ and IPSZ drawing
-
-
         if (m_Aircrafts[i]->isInConflict()) {
             painter->setPen(QPen(Qt::red, 0.3, Qt::SolidLine));
         } else if (m_Aircrafts[i]->isZoneIntersects()) {
@@ -147,18 +150,11 @@ void FieldViewItem::drawAircrafts(QPainter* painter) {
 
         painter->save();
         painter->translate(m_Aircrafts[i]->x(), m_Aircrafts[i]->y());
-
-        // Доворот на 90 градусов нужен для ориентации с.к. по ходу движения ВС.
-        painter->rotate(((-1) * m_Aircrafts[i]->getHorizontalAngle()) + 90);
-
-        //painter->drawRect(m_Aircrafts[i]->get_ISZ_Rectangle());
-        painter->drawRect(m_Aircrafts[i]->get_IPSZ_Rectangle());
+        painter->drawPolygon(m_Aircrafts[i]->get_ISZ_Rectangle());
+        painter->drawPolygon(m_Aircrafts[i]->get_IPSZ_Rectangle());
         painter->restore();
 
-        painter->save();
-        painter->translate(m_Aircrafts[i]->x(), m_Aircrafts[i]->y());
-        painter->drawPolygon(m_Aircrafts[i]->get_ISZ_Rectangle1());
-        painter->restore();
+        //painter->drawPolygon(m_Aircrafts[i]->getShifted_IPSZ_Rectangle());
     }
 }
 

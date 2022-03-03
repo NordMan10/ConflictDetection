@@ -28,28 +28,10 @@ Aircraft::Aircraft(std::string id, AircraftPath path, IAircraftObserver* observe
 }
 
 void Aircraft::initGraphicsItems() {
-    double ISZ_Width = Convert::ConvertMetersToPixels(m_ISZ_Width);
-    double ISZ_Length = Convert::ConvertMetersToPixels(m_ISZ_Length);
-    double IPSZ_Length = Convert::ConvertMetersToPixels(get_IPSZ_Length());
+    create_ISZ_Rectangle();
+    create_IPSZ_Rectangle();
 
-    double angleHor = getHorizontalAngle();
-    QPoint p1(Convert::ConvertMetersToPixels((m_ISZ_Length) * std::cos(angleHor * PI / 180)),
-              (-1) * Convert::ConvertMetersToPixels((-m_ISZ_Width) * std::sin(angleHor * PI / 180)));
-    QPoint p2(Convert::ConvertMetersToPixels((-m_ISZ_Length) * std::cos(angleHor * PI / 180)),
-              (-1) * Convert::ConvertMetersToPixels((-m_ISZ_Width) * std::sin(angleHor * PI / 180)));
-    QPoint p3(Convert::ConvertMetersToPixels((-m_ISZ_Length) * std::cos(angleHor * PI / 180)),
-              (-1) * Convert::ConvertMetersToPixels((m_ISZ_Width) * std::sin(angleHor * PI / 180)));
-    QPoint p4(Convert::ConvertMetersToPixels((m_ISZ_Length) * std::cos(angleHor * PI / 180)),
-              (-1) * Convert::ConvertMetersToPixels((m_ISZ_Width) * std::sin(angleHor * PI / 180))) ;
-
-    m_ISZ_Rectangle1 = QPolygon(QVector<QPoint>{p1, p2, p3, p4});
-
-    m_ISZ_Rectangle = QRect(((-1) * Convert::ConvertMetersToPixels(m_ISZ_Width)),
-                            ((-1) * Convert::ConvertMetersToPixels(m_ISZ_Length)),
-                            Convert::ConvertMetersToPixels(m_ISZ_Width * 2),
-                            Convert::ConvertMetersToPixels(m_ISZ_Length) * 2);
-
-    m_IPSZ_Rectangle = QRect((-1) * ISZ_Width, ((-1) * IPSZ_Length) + (ISZ_Length), ISZ_Width * 2, IPSZ_Length);
+    //m_IPSZ_Rectangle = QRect((-1) * ISZ_Width, ((-1) * IPSZ_Length) + (ISZ_Length), ISZ_Width * 2, IPSZ_Length);
 }
 
 std::string Aircraft::getId() const {
@@ -124,16 +106,24 @@ double Aircraft::getVelocityZ() const {
     return m_VelocityZ;
 }
 
-QRect& Aircraft::get_ISZ_Rectangle() {
+QPolygon& Aircraft::get_ISZ_Rectangle() {
     return m_ISZ_Rectangle;
 }
 
-QRect& Aircraft::get_IPSZ_Rectangle() {
+//QRect& Aircraft::get_IPSZ_Rectangle() {
+//    return m_IPSZ_Rectangle;
+//}
+
+QPolygon& Aircraft::get_IPSZ_Rectangle() {
     return m_IPSZ_Rectangle;
 }
 
-QPolygon& Aircraft::get_ISZ_Rectangle1() {
-    return m_ISZ_Rectangle1;
+QPolygon& Aircraft::getShifted_IPSZ_Rectangle() {
+    for (int i = 0; i < m_IPSZ_Rectangle.count(); i++) {
+        auto point = m_IPSZ_Rectangle.point(i);
+        m_Shifted_IPSZ_Rectangle.setPoint(i, point.x() + m_X, point.y() + m_Y);
+    }
+    return m_Shifted_IPSZ_Rectangle;
 }
 
 double Aircraft::getHorizontalAngle() const {
@@ -154,11 +144,6 @@ void Aircraft::calculateShifts(int timerTickValue) {
     m_VelocityY = (-1) * (m_Velocity * std::sin(angleHor * PI / 180));
     //m_VelocityZ = (m_Velocity * std::sin(angleV * PI / 180)) / (double)(1000 / timerTickValue);
 
-    //double pathShift = m_Velocity / (double)(1000 / timerTickValue);
-
-    //double xShift_inMeters = (pathShift * std::cos(angle * PI / 180));
-    //double yShift_inMeters = (-1) * (pathShift * std::sin(angle * PI / 180));
-
     double velocityXForShift = m_VelocityX / (double)(1000 / timerTickValue);
     double velocityYForShift = m_VelocityY / (double)(1000 / timerTickValue);
 
@@ -172,10 +157,6 @@ void Aircraft::calculateShifts(int timerTickValue) {
 void Aircraft::updateData(int timerTickValue) {
     m_X += m_XShift;
     m_Y += m_YShift;
-
-//    auto temp = m_XShift_inMeters;
-//    auto temp2 = m_X;
-//    auto temp3 = m_X_inMeters;
 
     m_X_inMeters += m_XShift_inMeters;
     m_Y_inMeters += m_YShift_inMeters;
@@ -206,6 +187,37 @@ void Aircraft::handleArrivalToEndPoint() {
         }
         m_AircraftObservers.clear();
     }
+}
+
+void Aircraft::create_ISZ_Rectangle() {
+    double angleHor = (-1) * getHorizontalAngle() * PI / 180;
+
+    QPoint p1(std::round(Convert::ConvertMetersToPixelsKeepSign((get_IPSZ_Length() - m_ISZ_Length) * std::cos(angleHor) - ((-1) * m_ISZ_Width * std::sin(angleHor)))),
+              std::round(Convert::ConvertMetersToPixelsKeepSign((get_IPSZ_Length() - m_ISZ_Length) * std::sin(angleHor) + ((-1) * m_ISZ_Width * std::cos(angleHor)))));
+    QPoint p2(std::round(Convert::ConvertMetersToPixelsKeepSign((-1) * m_ISZ_Length * std::cos(angleHor) - ((-1) * m_ISZ_Width * std::sin(angleHor)))),
+              std::round(Convert::ConvertMetersToPixelsKeepSign((-1) * m_ISZ_Length * std::sin(angleHor) + ((-1) * m_ISZ_Width * std::cos(angleHor)))));
+    QPoint p3(std::round(Convert::ConvertMetersToPixelsKeepSign((-1) * m_ISZ_Length * std::cos(angleHor) - m_ISZ_Width * std::sin(angleHor))),
+              std::round(Convert::ConvertMetersToPixelsKeepSign((-1) * m_ISZ_Length * std::sin(angleHor) + m_ISZ_Width * std::cos(angleHor))));
+    QPoint p4(std::round(Convert::ConvertMetersToPixelsKeepSign((get_IPSZ_Length() - m_ISZ_Length) * std::cos(angleHor) - m_ISZ_Width * std::sin(angleHor))),
+              std::round(Convert::ConvertMetersToPixelsKeepSign((get_IPSZ_Length() - m_ISZ_Length) * std::sin(angleHor) + m_ISZ_Width * std::cos(angleHor))));
+
+    m_IPSZ_Rectangle = QPolygon(QVector<QPoint>{p1, p2, p3, p4});
+    m_Shifted_IPSZ_Rectangle = QPolygon(QVector<QPoint>{p1, p2, p3, p4});
+}
+
+void Aircraft::create_IPSZ_Rectangle() {
+    double angleHor = (-1) * getHorizontalAngle() * PI / 180;
+
+    QPoint p11(std::round(Convert::ConvertMetersToPixelsKeepSign(m_ISZ_Length * std::cos(angleHor) - ((-1) * m_ISZ_Width * std::sin(angleHor)))),
+              std::round(Convert::ConvertMetersToPixelsKeepSign(m_ISZ_Length * std::sin(angleHor) + ((-1) * m_ISZ_Width * std::cos(angleHor)))));
+    QPoint p12(std::round(Convert::ConvertMetersToPixelsKeepSign((-1) * m_ISZ_Length * std::cos(angleHor) - ((-1) * m_ISZ_Width * std::sin(angleHor)))),
+              std::round(Convert::ConvertMetersToPixelsKeepSign((-1) * m_ISZ_Length * std::sin(angleHor) + ((-1) * m_ISZ_Width * std::cos(angleHor)))));
+    QPoint p13(std::round(Convert::ConvertMetersToPixelsKeepSign((-1) * m_ISZ_Length * std::cos(angleHor) - m_ISZ_Width * std::sin(angleHor))),
+              std::round(Convert::ConvertMetersToPixelsKeepSign((-1) * m_ISZ_Length * std::sin(angleHor) + m_ISZ_Width * std::cos(angleHor))));
+    QPoint p14(std::round(Convert::ConvertMetersToPixelsKeepSign(m_ISZ_Length * std::cos(angleHor) - m_ISZ_Width * std::sin(angleHor))),
+              std::round(Convert::ConvertMetersToPixelsKeepSign(m_ISZ_Length * std::sin(angleHor) + m_ISZ_Width * std::cos(angleHor))));
+
+    m_ISZ_Rectangle = QPolygon(QVector<QPoint>{p11, p12, p13, p14});
 }
 
 bool Aircraft::isAircraftAtPoint(CDPoint point) {
@@ -288,13 +300,11 @@ void Aircraft::conflictDetection() {
         if (distanceDerivative >= 0) {
             m_IsInConflict = false;
             potDangerousAircraft.setInConflict(false);
-            //continue;
-            // После этого можно проверок не делать
         }
 
 
         // Check IPSZ intersection
-        if (m_IPSZ_Rectangle.intersects(potDangerousAircraft.get_IPSZ_Rectangle())) {
+        if (getShifted_IPSZ_Rectangle().intersects(potDangerousAircraft.getShifted_IPSZ_Rectangle())) {
             m_IsZoneIntersects = true;
             potDangerousAircraft.setIsZoneIntersects(true);
 
@@ -303,7 +313,6 @@ void Aircraft::conflictDetection() {
                 double tau_min = (-1) * ((delta_X * delta_Vx + delta_Y * delta_Vy + delta_Z * delta_Vz)) /
                                          (std::pow(delta_Vx, 2) + std::pow(delta_Vy, 2) + std::pow(delta_Vz, 2));
                 m_Tau_min = tau_min;
-                qDebug() << "tau_min: " << tau_min;
 
                 // Возможно дело в знаках скоростей по осям
                 double thisX_tau_min = m_X_inMeters + m_VelocityX * tau_min;
@@ -333,9 +342,6 @@ void Aircraft::conflictDetection() {
             potDangerousAircraft.setIsZoneIntersects(false);
         }
     }
-
-
-
 
     // Matrix (?)
 }
@@ -385,6 +391,10 @@ bool Aircraft::isZoneIntersects() const {
 void Aircraft::setIsZoneIntersects(bool value) {
     m_IsZoneIntersects = value;
 }
+
+
+
+
 
 
 

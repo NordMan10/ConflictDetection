@@ -64,10 +64,11 @@ public:
 
     bool contains(std::vector<std::reference_wrapper<Aircraft>> vec, const Aircraft& elem);
 
-    QRect& get_ISZ_Rectangle();
-    QRect& get_IPSZ_Rectangle();
+    QPolygon& get_ISZ_Rectangle();
+//    QRect& get_IPSZ_Rectangle();
 
-    QPolygon& get_ISZ_Rectangle1();
+    QPolygon& get_IPSZ_Rectangle();
+    QPolygon& getShifted_IPSZ_Rectangle();
 
     bool isInConflict() const;
     void setInConflict(bool value);
@@ -99,6 +100,11 @@ private:
 
     bool isLinesIntersect(QLine line1, QLine line2);
     bool isRectanglesIntersect(QRect rect1, QRect rect2);
+
+    void create_ISZ_Rectangle();
+    void create_IPSZ_Rectangle();
+
+    //QPolygon& getShifted_IPSZ_Rectangle();
 
 private:
     std::vector<IAircraftObserver*> m_AircraftObservers;
@@ -132,11 +138,12 @@ private:
     int m_ISZ_Width = 1500;
     int m_ISZ_Length = 1500;
 
-    QRect m_ISZ_Rectangle;
+    QPolygon m_ISZ_Rectangle;
 
-    QRect m_IPSZ_Rectangle; // Если пересекаются, то оранжевым, если фактический конфликт, то красным
+//    QRect m_IPSZ_Rectangle; // Если пересекаются, то оранжевым, если фактический конфликт, то красным
 
-    QPolygon m_ISZ_Rectangle1;
+    QPolygon m_IPSZ_Rectangle;
+    QPolygon m_Shifted_IPSZ_Rectangle;
 
     // Интервал времени прогнозирования, с. Для БПЛА: 30 с., для самолетов: 90 с.
     int m_PredictingInterval = 90;

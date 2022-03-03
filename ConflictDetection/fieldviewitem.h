@@ -35,6 +35,8 @@ private:
 
     void drawPathIntersectionPoints(QPainter *painter);
 
+    void drawFieldGrid(QPainter *painter);
+
     void drawAircrafts(QPainter* painter);
 
 private:
