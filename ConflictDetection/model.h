@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <QTimer>
+#include <random>
 
 #include "IModel.h"
 //#include "cdpoint.h"
@@ -85,6 +86,11 @@ private:
 
     QTimer* m_TimerAircraftsMotion;
     int m_TimerAircraftsMotionTickValue = 100;
+
+    QTimer* m_TimerAircraftsCreation;
+    int m_TimerAircraftsCreationTickValue = 15000;
+    int m_TimerACTickValueMin = 10000;
+    int m_TimerACTickValueMax = 20000;
 };
 
 #endif // MODEL_H

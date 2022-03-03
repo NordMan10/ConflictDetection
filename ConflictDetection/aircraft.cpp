@@ -175,6 +175,9 @@ void Aircraft::handleArrivalToMiddlePoint() {
 
             calculateHorAngle();
             calculateShifts(m_TimerTickValue);
+
+            create_ISZ_Rectangle();
+            create_IPSZ_Rectangle();
         }
     }
 }
@@ -220,8 +223,9 @@ void Aircraft::create_IPSZ_Rectangle() {
     m_ISZ_Rectangle = QPolygon(QVector<QPoint>{p11, p12, p13, p14});
 }
 
+// Значение погрешностей нужно вынести!
 bool Aircraft::isAircraftAtPoint(CDPoint point) {
-    return (std::abs(m_X_inMeters - point.x_inMeters()) < 30 && std::abs(m_Y_inMeters - point.y_inMeters()) < 30);
+    return (std::abs(m_X_inMeters - point.x_inMeters()) < 100 && std::abs(m_Y_inMeters - point.y_inMeters()) < 100);
 }
 
 CDPoint Aircraft::getNextPathPoint(CDPoint point) {
@@ -235,7 +239,8 @@ CDPoint Aircraft::getNextPathPoint(CDPoint point) {
 
 // Попробуй поменять на метры (расчет в пикселях может давать сильные неточности)
 bool Aircraft::isAircraftPotentiallyDangerous(const Aircraft& aircraft) {
-    return std::pow(aircraft.x() - x(), 2) + std::pow(aircraft.y() - y(), 2) <= std::pow(m_DangerRadius, 2);
+    return std::pow(aircraft.x_inMeters() - x_inMeters(), 2) +
+            std::pow(aircraft.y_inMeters() - y_inMeters(), 2) <= std::pow(m_DangerRadius, 2);
 }
 
 std::vector<std::reference_wrapper<Aircraft>>& Aircraft::getPotentiallyDangerousAircrafts() {

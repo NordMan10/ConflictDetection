@@ -7,10 +7,10 @@ Model::Model() :
     initPaths();
 
     m_TimerAircraftsMotion = new QTimer();
-
     QObject::connect(m_TimerAircraftsMotion, &QTimer::timeout, this, &Model::notifyAircraftTimerObservers);
 
-
+    m_TimerAircraftsCreation = new QTimer();
+    QObject::connect(m_TimerAircraftsCreation, &QTimer::timeout, this, &Model::createAircraft);
 }
 
 std::vector<CDPoint>& Model::getZonePoints() {
@@ -128,34 +128,46 @@ void Model::registerAircraftsObserver(IAircraftObserver* observer) {
 }
 
 void Model::createAircraft() {
-    m_Aircrafts.push_back(new Aircraft("A301", m_AircraftPaths[0], this,
+    std::random_device rd;
+    std::mt19937 eng(rd());
+    std::uniform_int_distribution<int> pathDistr(0, m_AircraftPaths.size() - 1);
+    std::uniform_int_distribution<int> intervalDistr(m_TimerACTickValueMin, m_TimerACTickValueMax);
+
+    int pathIndex = pathDistr(eng);
+    m_Aircrafts.push_back(new Aircraft("A301", m_AircraftPaths[pathIndex], this,
                           (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
     registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
 
-    m_Aircrafts.push_back(new Aircraft("A302", m_AircraftPaths[1], this,
-                          (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
-    registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
+    m_TimerAircraftsCreation->setInterval(intervalDistr(eng));
 }
 
+// Этот метод являетя частью интерфейса Наблюдатель
 void Model::updateAircraftData(int aircraftListIndex) {
+    removeAircraftTimerObserver(m_Aircrafts[aircraftListIndex]);
+
     m_Aircrafts.erase(m_Aircrafts.begin() + aircraftListIndex);
 }
 
 void Model::start() {
     m_TimerAircraftsMotion->start(m_TimerAircraftsMotionTickValue);
+    m_TimerAircraftsCreation->start(m_TimerAircraftsCreationTickValue);
 
     createAircraft();
 }
 
 void Model::stop() {
     m_TimerAircraftsMotion->stop();
+    m_TimerAircraftsCreation->stop();
+
     m_Aircrafts.clear();
 }
 
 void Model::pause() {
     m_TimerAircraftsMotion->stop();
+    m_TimerAircraftsCreation->stop();
 }
 
 void Model::continueWork() {
     m_TimerAircraftsMotion->start();
+    m_TimerAircraftsCreation->start();
 }
