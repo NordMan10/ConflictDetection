@@ -2,6 +2,7 @@
 #define MODEL_H
 
 #include <vector>
+#include <QTime>
 #include <QTimer>
 #include <random>
 
@@ -41,7 +42,7 @@ public:
 
     void createAircraft();
 
-    void updateAircraftData(int aircraftListIndex) override;
+    void updateAircraftData(std::string aircraftId) override;
 
 protected slots:
     //void timerAircraftsMotionTimeout();
@@ -66,6 +67,10 @@ private:
 
     void checkPotentiallyDangerousAircrafts();
 
+    QString getAircraftId(int pathId);
+
+    Aircraft* getAircraftById(std::string aircraftId);
+
 private:
     std::vector<CDPoint> m_ZonePoints;
     std::vector<CDPoint> m_PathPoints;
@@ -89,8 +94,11 @@ private:
 
     QTimer* m_TimerAircraftsCreation;
     int m_TimerAircraftsCreationTickValue = 15000;
-    int m_TimerACTickValueMin = 10000;
-    int m_TimerACTickValueMax = 20000;
+    int m_TimerACTickValueMin = 20000;
+    int m_TimerACTickValueMax = 30000;
+
+    std::vector<std::string> m_AircraftIdsToRemove;
+    bool m_CanRemoveAircraft = true;
 };
 
 #endif // MODEL_H

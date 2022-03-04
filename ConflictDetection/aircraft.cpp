@@ -1,11 +1,17 @@
 #include "aircraft.h"
 
-Aircraft::Aircraft(std::string id, AircraftPath path, IAircraftObserver* observer, int aircraftListIndex, int timerTickValue) :
-    m_Id(id),
+Aircraft::Aircraft(std::string id, AircraftPath path, IAircraftObserver* observer, std::string entryMoment,
+                   int aircraftListIndex, int timerTickValue) :
     m_Path(path),
     m_ActivePathStartPoint(path.getPath()[0]),
     m_ActivePathEndPoint(path.getPath()[1])
 {
+    m_Id = id;
+    m_EntryMoment = entryMoment;
+    m_TimerTickValue = timerTickValue;
+    m_Image = QPixmap(":/resources/img/aircraft2.png");
+    m_DataCardRect = QRectF(5, -20, 38, 15);
+
     m_AircraftObservers.push_back(observer);
     m_AircraftListIndex = aircraftListIndex;
 
@@ -16,10 +22,6 @@ Aircraft::Aircraft(std::string id, AircraftPath path, IAircraftObserver* observe
     m_X_inMeters = m_Path.getPath()[0].x_inMeters();
     m_Y_inMeters = m_Path.getPath()[0].y_inMeters();
     m_Z_inMeters = m_Path.getPath()[0].z_inMeters();
-
-    m_Image = QPixmap(":/resources/img/aircraft2.png");
-
-    m_TimerTickValue = timerTickValue;
 
     calculateHorAngle();
     calculateShifts(timerTickValue);
@@ -32,6 +34,21 @@ void Aircraft::initGraphicsItems() {
     create_IPSZ_Rectangle();
 
     //m_IPSZ_Rectangle = QRect((-1) * ISZ_Width, ((-1) * IPSZ_Length) + (ISZ_Length), ISZ_Width * 2, IPSZ_Length);
+}
+
+const QString& Aircraft::getTextForDataCard() {
+    m_TextForDataCard = QString::fromStdString("  ID: " + m_Id + "; ") + QString("Момент входа: ") +
+            QString::fromStdString(m_EntryMoment) + QString("\n") +
+            QString("  x: " + QString::number(m_X_inMeters) + " м;" + QString("\n") +
+                    "  y: " + QString::number(m_Y_inMeters) + " м;" + QString("\n") +
+                    "  z: " + QString::number(m_Z_inMeters) + " м;" + QString("\n") +
+                    QString("  Скорость: ") + QString::number(m_Velocity) + " м");
+
+    return m_TextForDataCard;
+}
+
+const QRectF& Aircraft::getDataCardRect() {
+    return m_DataCardRect;
 }
 
 std::string Aircraft::getId() const {
@@ -186,9 +203,10 @@ void Aircraft::handleArrivalToEndPoint() {
     CDPoint endPoint = m_Path.getPath()[m_Path.getPath().size() - 1];
     if (isAircraftAtPoint(endPoint)) {
         for (int i = 0; i < m_AircraftObservers.size(); i++) {
-            m_AircraftObservers[i]->updateAircraftData(m_AircraftListIndex);
+            m_AircraftObservers[i]->updateAircraftData(getId());
         }
         m_AircraftObservers.clear();
+        m_XShift = m_YShift = m_XShift_inMeters = m_YShift_inMeters = 0;
     }
 }
 
@@ -225,7 +243,8 @@ void Aircraft::create_IPSZ_Rectangle() {
 
 // Значение погрешностей нужно вынести!
 bool Aircraft::isAircraftAtPoint(CDPoint point) {
-    return (std::abs(m_X_inMeters - point.x_inMeters()) < 100 && std::abs(m_Y_inMeters - point.y_inMeters()) < 100);
+    return (std::abs(x_inMeters() - point.x_inMeters()) < std::abs(m_XShift_inMeters / 1.5) &&
+            std::abs(y_inMeters() - point.y_inMeters()) < std::abs(m_YShift_inMeters / 1.5));
 }
 
 CDPoint Aircraft::getNextPathPoint(CDPoint point) {
@@ -354,7 +373,7 @@ void Aircraft::conflictDetection() {
 bool Aircraft::isSeparationStandardsViolated(double delta_X, double delta_Y, double delta_Z) {
     double horDistance = std::sqrt(std::pow(delta_X, 2) + std::pow(delta_Y, 2));
     //double temp = horDistance;
-    qDebug() << "horDistance: " << horDistance;
+    //qDebug() << "horDistance: " << horDistance;
     return delta_Z <= m_SeparationStandardV && horDistance <= m_SeparationStandardHor;
 }
 

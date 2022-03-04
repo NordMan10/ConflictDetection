@@ -32,7 +32,7 @@ public:
     explicit MainWindow(IModel &model, IController &controller, QWidget *parent = 0);
     ~MainWindow();
 
-    void updateAircraftData(int aircraftListIndex) override;
+    void updateAircraftData(std::string aircraftId) override;
 
 private:
     Ui::MainWindow *ui;

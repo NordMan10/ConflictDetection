@@ -6,6 +6,7 @@
 #include <QVector>
 #include <QDebug>
 #include <QPolygon>
+#include <QLabel>
 
 #include "IAircraftTimerObserver.h"
 #include "cdpoint.h"
@@ -17,9 +18,8 @@
 class Aircraft : public IAircraftTimerObserver
 {
 public:
-    Aircraft(std::string id, AircraftPath path, IAircraftObserver* observer, int aircraftListIndex, int timerTickValue);
-
-    void initGraphicsItems();
+    Aircraft(std::string id, AircraftPath path, IAircraftObserver* observer, std::string entryMoment,
+             int aircraftListIndex, int timerTickValue);
 
     std::string getId() const;
 
@@ -53,6 +53,9 @@ public:
     double getVelocityY() const;
     double getVelocityZ() const;
 
+    const QString& getTextForDataCard();
+    const QRectF& getDataCardRect();
+
     bool isAircraftPotentiallyDangerous(const Aircraft& aircraft);
 
     std::vector<std::reference_wrapper<Aircraft>>& getPotentiallyDangerousAircrafts();
@@ -78,6 +81,8 @@ public:
     void setIsZoneIntersects(bool value);
 
 private:
+    void initGraphicsItems();
+
     void calculateHorAngle();
 
     void handleArrivalToEndPoint();
@@ -128,7 +133,7 @@ private:
 
     // Момент входа в зону (момент создания ВС) в значении счетчика секундомера.
     // Для вывода нужно конвертировать с помощью QTime::fromMSecsSinceStartOfDay
-    int m_EntryMoment;
+    std::string m_EntryMoment;
 
     // Скорость в м/с
     double m_Velocity = 2750;
@@ -181,6 +186,9 @@ private:
 
     bool m_IsZoneIntersects = false;
     bool m_IsInConflict = false;
+
+    QString m_TextForDataCard;
+    QRectF m_DataCardRect;
 };
 
 #endif // AIRCRAFT_H

@@ -134,10 +134,10 @@ void FieldViewItem::drawAircrafts(QPainter* painter) {
         painter->setBrush(Qt::transparent);
 
         int radiusInPixels = Convert::ConvertMetersToPixels(m_Aircrafts[i]->getDangerRadius());
-        painter->drawEllipse(m_Aircrafts[i]->x() - radiusInPixels,
-                             m_Aircrafts[i]->y() - radiusInPixels,
-                             radiusInPixels * 2,
-                             radiusInPixels * 2);
+
+        painter->save();
+        painter->translate(m_Aircrafts[i]->x(), m_Aircrafts[i]->y());
+        painter->drawEllipse(-radiusInPixels, -radiusInPixels, radiusInPixels * 2, radiusInPixels * 2);
 
         // ISZ and IPSZ drawing
         if (m_Aircrafts[i]->isInConflict()) {
@@ -148,13 +148,23 @@ void FieldViewItem::drawAircrafts(QPainter* painter) {
             painter->setPen(QPen(Qt::black, 0.3, Qt::SolidLine));
         }
 
-        painter->save();
-        painter->translate(m_Aircrafts[i]->x(), m_Aircrafts[i]->y());
         painter->drawPolygon(m_Aircrafts[i]->get_ISZ_Rectangle());
         painter->drawPolygon(m_Aircrafts[i]->get_IPSZ_Rectangle());
-        painter->restore();
 
         //painter->drawPolygon(m_Aircrafts[i]->getShifted_IPSZ_Rectangle());
+
+        // Data card drawing
+        painter->setPen(QPen(Qt::black, 0.2, Qt::SolidLine));
+        painter->setBrush(QColor(255, 255, 255, 127));
+
+
+        painter->drawRect(m_Aircrafts[i]->getDataCardRect());
+
+        painter->setFont(QFont("Roboto", 1));
+        painter->drawText(m_Aircrafts[i]->getDataCardRect(), 0, m_Aircrafts[i]->getTextForDataCard());
+        //painter->drawText(7, -23, m_Aircrafts[i]->getTextForDataCard());
+
+        painter->restore();
     }
 }
 

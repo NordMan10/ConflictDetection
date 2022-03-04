@@ -31,14 +31,8 @@ void MainWindow::standardOptions() {
 }
 
 void MainWindow::initViewElements() {
-    //qDebug() << width() << ", " << height();
-    //ui->mainGrid->setGeometry(QRect(0, 0, width(), height()));
-    //ui->MainWindow::centralwidget->setWid
-
     ui->mainGrid->setRowStretch(0, 1);
     ui->mainGrid->setRowStretch(1, 4);
-
-    //qDebug() << ui->mainGrid->geometry().width() << ui->mainGrid->geometry().height();
 
     ui->topGrid->setMargin(30);
     ui->topGrid->setColumnStretch(0, 1);
@@ -67,7 +61,6 @@ void MainWindow::initViewElements() {
     m_FieldWidth = m_FieldView->getWidth();
     m_FieldHeight = m_FieldView->getHeight();
     ui->bottomGrid->addWidget(m_FieldView, 0, 0/*, Qt::AlignJustify*/);
-    //qDebug() << ui->bottomGrid->cellRect(0, 0).width() << ui->bottomGrid->cellRect(0, 0).height();
 
     m_TimerStopwatch = new QTimer();
 }
@@ -125,7 +118,7 @@ void MainWindow::continueWork() {
     m_Controller.continueWork();
 }
 
-void MainWindow::updateAircraftData(int aircraftListIndex) {
+void MainWindow::updateAircraftData(std::string aircraftId) {
     m_FieldView->updateGraphics();
 }
 

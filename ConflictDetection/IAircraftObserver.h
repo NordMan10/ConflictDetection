@@ -10,7 +10,7 @@ class IAircraftObserver
 public:
     virtual ~IAircraftObserver(){};
 
-    virtual void updateAircraftData(int aircraftListIndex) = 0;
+    virtual void updateAircraftData(std::string aircraftId) = 0;
 };
 
 #endif // IAIRCRAFTOBSERVER_H

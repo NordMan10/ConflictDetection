@@ -13,29 +13,6 @@ Model::Model() :
     QObject::connect(m_TimerAircraftsCreation, &QTimer::timeout, this, &Model::createAircraft);
 }
 
-std::vector<CDPoint>& Model::getZonePoints() {
-    return m_ZonePoints;
-}
-
-std::vector<CDPoint>& Model::getPathPoints() {
-    return m_PathPoints;
-}
-
-std::vector<CDPoint>& Model::getPathIntersectionPoints() {
-    return m_PathIntersectionPoints;
-}
-
-FieldPoints& Model::getFieldPoints() {
-    return m_FieldPoints;
-}
-
-std::vector<AircraftPath>& Model::getPaths() {
-    return m_AircraftPaths;
-}
-
-std::vector<Aircraft*>& Model::getAircrafts() {
-    return m_Aircrafts;
-}
 
 void Model::initPoints() {
     initZonePoints();
@@ -74,6 +51,35 @@ void Model::initPaths() {
     m_AircraftPaths.push_back(AircraftPath({m_PathPoints[6], m_PathIntersectionPoints[0], m_PathPoints[3]}));
 }
 
+
+std::vector<CDPoint>& Model::getZonePoints() {
+    return m_ZonePoints;
+}
+
+std::vector<CDPoint>& Model::getPathPoints() {
+    return m_PathPoints;
+}
+
+std::vector<CDPoint>& Model::getPathIntersectionPoints() {
+    return m_PathIntersectionPoints;
+}
+
+FieldPoints& Model::getFieldPoints() {
+    return m_FieldPoints;
+}
+
+std::vector<AircraftPath>& Model::getPaths() {
+    return m_AircraftPaths;
+}
+
+std::vector<Aircraft*>& Model::getAircrafts() {
+    return m_Aircrafts;
+}
+
+QString Model::getAircraftId(int pathId) {
+    return "A" + QString::number(pathId + 1) + QString("0") + QString::number(m_Aircrafts.size() + 1);
+}
+
 long long Model::getStopwatchValue() {
     return m_StopwatchValue;
 }
@@ -99,15 +105,16 @@ void Model::notifyAircraftTimerObservers() {
         m_AircraftTimerObservers[i]->updateData(m_TimerAircraftsMotionTickValue);
     }
 
-    // В этот метод передается -1, поскольку интерфейс, к которому принадлежит данный метод,
-    // используется и классом MainWindow (Представлением), и Моделью. В модели нужно принимать число,
+    // В этот метод передается "", поскольку интерфейс, к которому принадлежит данный метод,
+    // используется и классом MainWindow (Представлением), и Моделью. В модели нужно принимать значение,
     // в Представлении нет. Такие дела.
-    m_AircraftObserver->updateAircraftData(-1);
+    m_AircraftObserver->updateAircraftData("");
 
     checkPotentiallyDangerousAircrafts();
 }
 
 void Model::checkPotentiallyDangerousAircrafts() {
+    m_CanRemoveAircraft = false;
     for (int i = 0; i < m_Aircrafts.size() - 1; i++) {
         for (int j = i + 1; j < m_Aircrafts.size(); j++) {
             auto potDangerousAircrafts = m_Aircrafts[i]->getPotentiallyDangerousAircrafts();
@@ -121,6 +128,7 @@ void Model::checkPotentiallyDangerousAircrafts() {
             }
         }
     }
+    m_CanRemoveAircraft = true;
 }
 
 void Model::registerAircraftsObserver(IAircraftObserver* observer) {
@@ -134,18 +142,40 @@ void Model::createAircraft() {
     std::uniform_int_distribution<int> intervalDistr(m_TimerACTickValueMin, m_TimerACTickValueMax);
 
     int pathIndex = pathDistr(eng);
-    m_Aircrafts.push_back(new Aircraft("A301", m_AircraftPaths[pathIndex], this,
-                          (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
+    m_Aircrafts.push_back(new Aircraft(getAircraftId(pathIndex).toStdString(), m_AircraftPaths[pathIndex], this,
+                                       QTime::fromMSecsSinceStartOfDay(getStopwatchValue()).toString().toStdString(),
+                                       (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
     registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
 
     m_TimerAircraftsCreation->setInterval(intervalDistr(eng));
 }
 
 // Этот метод являетя частью интерфейса Наблюдатель
-void Model::updateAircraftData(int aircraftListIndex) {
-    removeAircraftTimerObserver(m_Aircrafts[aircraftListIndex]);
+void Model::updateAircraftData(std::string aircraftId) {
+    m_AircraftIdsToRemove.push_back(aircraftId);
+    if (m_CanRemoveAircraft) {
+        std::vector<int> indices;
+        for (int i = 0; i < m_AircraftIdsToRemove.size(); i++) {
+            removeAircraftTimerObserver(getAircraftById(m_AircraftIdsToRemove[i]));
+            std::remove(m_Aircrafts.begin(), m_Aircrafts.end(), getAircraftById(m_AircraftIdsToRemove[i]));
 
-    m_Aircrafts.erase(m_Aircrafts.begin() + aircraftListIndex);
+            indices.push_back(i);
+        }
+
+        for (int i = 0; i < indices.size(); i++) {
+            m_AircraftIdsToRemove.erase(m_AircraftIdsToRemove.begin() + i);
+        }
+    }
+}
+
+Aircraft* Model::getAircraftById(std::string aircraftId) {
+    for (int i = 0; i < m_Aircrafts.size(); i++) {
+        if (m_Aircrafts[i]->getId() == aircraftId) {
+            return m_Aircrafts[i];
+        }
+    }
+
+    throw std::invalid_argument("The aicraftId is not contained in the list of aircrafts");
 }
 
 void Model::start() {
