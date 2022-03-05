@@ -155,7 +155,7 @@ void FieldViewItem::drawAircrafts(QPainter* painter) {
 
         // Data card drawing
         painter->setPen(QPen(Qt::black, 0.2, Qt::SolidLine));
-        painter->setBrush(QColor(255, 255, 255, 127));
+        painter->setBrush(QColor(255, 255, 255, 200));
 
 
         painter->drawRect(m_Aircrafts[i]->getDataCardRect());

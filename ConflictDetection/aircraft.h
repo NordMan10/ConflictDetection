@@ -136,7 +136,7 @@ private:
     std::string m_EntryMoment;
 
     // Скорость в м/с
-    double m_Velocity = 2750;
+    double m_Velocity = 275;
 
     // Размеры ИЗБ по высоте, ширине и длине, в метрах (это +-).
     int m_ISZ_Height = 300;
@@ -151,14 +151,14 @@ private:
     QPolygon m_Shifted_IPSZ_Rectangle;
 
     // Интервал времени прогнозирования, с. Для БПЛА: 30 с., для самолетов: 90 с.
-    int m_PredictingInterval = 90;
+    int m_PredictingInterval = 40;
 
     // Допуски на вертикальное и горизонтальное эшелонировавние соответственно, в метрах.
     int m_SeparationStandardV = 300;
     int m_SeparationStandardHor = 2000;
 
     // Радиус в метрах
-    int m_DangerRadius = 5000;
+    int m_DangerRadius = 10000;
 
     AircraftPath m_Path;
 

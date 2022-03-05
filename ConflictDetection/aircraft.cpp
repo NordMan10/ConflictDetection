@@ -10,7 +10,7 @@ Aircraft::Aircraft(std::string id, AircraftPath path, IAircraftObserver* observe
     m_EntryMoment = entryMoment;
     m_TimerTickValue = timerTickValue;
     m_Image = QPixmap(":/resources/img/aircraft2.png");
-    m_DataCardRect = QRectF(5, -20, 38, 15);
+    m_DataCardRect = QRectF(5, -20, 36, 12);
 
     m_AircraftObservers.push_back(observer);
     m_AircraftListIndex = aircraftListIndex;
@@ -37,12 +37,12 @@ void Aircraft::initGraphicsItems() {
 }
 
 const QString& Aircraft::getTextForDataCard() {
-    m_TextForDataCard = QString::fromStdString("  ID: " + m_Id + "; ") + QString("Момент входа: ") +
-            QString::fromStdString(m_EntryMoment) + QString("\n") +
-            QString("  x: " + QString::number(m_X_inMeters) + " м;" + QString("\n") +
-                    "  y: " + QString::number(m_Y_inMeters) + " м;" + QString("\n") +
-                    "  z: " + QString::number(m_Z_inMeters) + " м;" + QString("\n") +
-                    QString("  Скорость: ") + QString::number(m_Velocity) + " м");
+    m_TextForDataCard = QString::fromStdString("  " + m_Id) + QString("\n") +
+                        QString::fromStdString("  " + m_EntryMoment) + QString("\n") +
+                        QString("  x: " + QString::number(std::round(m_X_inMeters)) + "; " +
+                                "  y: " + QString::number(std::round(m_Y_inMeters)) + "; " +
+                                "  z: " + QString::number(std::round(m_Z_inMeters)) + "; " + QString("\n") +
+                        QString("  Скорость: ") + QString::number(m_Velocity) + " м/с");
 
     return m_TextForDataCard;
 }
@@ -326,44 +326,42 @@ void Aircraft::conflictDetection() {
             potDangerousAircraft.setInConflict(false);
         }
 
-
         // Check IPSZ intersection
         if (getShifted_IPSZ_Rectangle().intersects(potDangerousAircraft.getShifted_IPSZ_Rectangle())) {
             m_IsZoneIntersects = true;
             potDangerousAircraft.setIsZoneIntersects(true);
-
-            if (m_Tau_min < 0 && distanceDerivative < 0) {
-                // Inverval of minimal distance calculation and vertical and horizontal distance calculation
-                double tau_min = (-1) * ((delta_X * delta_Vx + delta_Y * delta_Vy + delta_Z * delta_Vz)) /
-                                         (std::pow(delta_Vx, 2) + std::pow(delta_Vy, 2) + std::pow(delta_Vz, 2));
-                m_Tau_min = tau_min;
-
-                // Возможно дело в знаках скоростей по осям
-                double thisX_tau_min = m_X_inMeters + m_VelocityX * tau_min;
-                double thisY_tau_min = m_Y_inMeters + m_VelocityY * tau_min;
-                double thisZ_tau_min = m_Z_inMeters + m_VelocityZ * tau_min;
-
-                double x_tau_min = potDangerousAircraft.x_inMeters() + potDangerousAircraft.getVelocityX() * tau_min;
-                double y_tau_min = potDangerousAircraft.y_inMeters() + potDangerousAircraft.getVelocityY() * tau_min;
-                double z_tau_min = potDangerousAircraft.z_inMeters() + potDangerousAircraft.getVelocityZ() * tau_min;
-
-                double delta_X_tau_min = x_tau_min - thisX_tau_min;
-                double delta_Y_tau_min = y_tau_min - thisY_tau_min;
-                double delta_Z_tau_min = z_tau_min - thisZ_tau_min;
-
-                // Check bounds violation
-                if (isSeparationStandardsViolated(delta_X_tau_min, delta_Y_tau_min, delta_Z_tau_min)) {
-                    m_IsInConflict = true;
-                    potDangerousAircraft.setInConflict(true);
-                } else {
-                    m_IsInConflict = false;
-                    potDangerousAircraft.setInConflict(false);
-                }
-            }
-
         } else {
             m_IsZoneIntersects = false;
             potDangerousAircraft.setIsZoneIntersects(false);
+        }
+
+        if (m_Tau_min < 0 && distanceDerivative < 0) {
+            // Inverval of minimal distance calculation and vertical and horizontal distance calculation
+            double tau_min = (-1) * ((delta_X * delta_Vx + delta_Y * delta_Vy + delta_Z * delta_Vz)) /
+                                     (std::pow(delta_Vx, 2) + std::pow(delta_Vy, 2) + std::pow(delta_Vz, 2));
+            m_Tau_min = tau_min;
+
+            // Возможно дело в знаках скоростей по осям
+            double thisX_tau_min = m_X_inMeters + m_VelocityX * tau_min;
+            double thisY_tau_min = m_Y_inMeters + m_VelocityY * tau_min;
+            double thisZ_tau_min = m_Z_inMeters + m_VelocityZ * tau_min;
+
+            double x_tau_min = potDangerousAircraft.x_inMeters() + potDangerousAircraft.getVelocityX() * tau_min;
+            double y_tau_min = potDangerousAircraft.y_inMeters() + potDangerousAircraft.getVelocityY() * tau_min;
+            double z_tau_min = potDangerousAircraft.z_inMeters() + potDangerousAircraft.getVelocityZ() * tau_min;
+
+            double delta_X_tau_min = x_tau_min - thisX_tau_min;
+            double delta_Y_tau_min = y_tau_min - thisY_tau_min;
+            double delta_Z_tau_min = z_tau_min - thisZ_tau_min;
+
+            // Check bounds violation
+            if (isSeparationStandardsViolated(delta_X_tau_min, delta_Y_tau_min, delta_Z_tau_min)) {
+                m_IsInConflict = true;
+                potDangerousAircraft.setInConflict(true);
+            } else {
+                m_IsInConflict = false;
+                potDangerousAircraft.setInConflict(false);
+            }
         }
     }
 
