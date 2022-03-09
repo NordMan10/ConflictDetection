@@ -149,6 +149,7 @@ void FieldViewItem::drawAircrafts(QPainter* painter) {
         }
 
         painter->drawPolygon(m_Aircrafts[i]->get_ISZ_Rectangle());
+
         painter->drawPolygon(m_Aircrafts[i]->get_IPSZ_Rectangle());
 
         //painter->drawPolygon(m_Aircrafts[i]->getShifted_IPSZ_Rectangle());

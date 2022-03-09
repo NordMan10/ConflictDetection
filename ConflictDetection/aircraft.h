@@ -184,6 +184,8 @@ private:
 
     double m_Tau_min = -1;
 
+    double m_R_min = -1;
+
     bool m_IsZoneIntersects = false;
     bool m_IsInConflict = false;
 
