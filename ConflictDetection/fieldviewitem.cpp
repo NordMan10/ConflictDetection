@@ -129,8 +129,11 @@ void FieldViewItem::drawAircrafts(QPainter* painter) {
                             m_Aircrafts[i]->getImage());
         painter->restore();
 
+
+        QPen pen(Qt::black, 0.3, Qt::SolidLine);
         // Circle drawing
-        painter->setPen(QPen(Qt::black, 0.3, Qt::DotLine));
+        pen.setStyle(Qt::DotLine);
+        painter->setPen(pen);
         painter->setBrush(Qt::transparent);
 
         int radiusInPixels = Convert::ConvertMetersToPixels(m_Aircrafts[i]->getDangerRadius());
@@ -140,22 +143,31 @@ void FieldViewItem::drawAircrafts(QPainter* painter) {
         painter->drawEllipse(-radiusInPixels, -radiusInPixels, radiusInPixels * 2, radiusInPixels * 2);
 
         // ISZ and IPSZ drawing
+        pen.setStyle(Qt::SolidLine);
+
         if (m_Aircrafts[i]->isInConflict()) {
-            painter->setPen(QPen(Qt::red, 0.3, Qt::SolidLine));
+            pen.setColor(Qt::red);
+            painter->setPen(pen);
         } else if (m_Aircrafts[i]->isZoneIntersects()) {
-            painter->setPen(QPen(QColor("orange"), 0.3, Qt::SolidLine));
+            pen.setColor(QColor("orange"));
+            painter->setPen(pen);
         } else {
-            painter->setPen(QPen(Qt::black, 0.3, Qt::SolidLine));
+            pen.setColor(Qt::black);
+            painter->setPen(pen);
         }
 
         painter->drawPolygon(m_Aircrafts[i]->get_ISZ_Rectangle());
 
+        pen.setWidthF(0.5);
+        painter->setPen(pen);
         painter->drawPolygon(m_Aircrafts[i]->get_IPSZ_Rectangle());
 
         //painter->drawPolygon(m_Aircrafts[i]->getShifted_IPSZ_Rectangle());
 
         // Data card drawing
-        painter->setPen(QPen(Qt::black, 0.2, Qt::SolidLine));
+        pen.setColor(Qt::black);
+        pen.setWidthF(0.2);
+        painter->setPen(pen);
         painter->setBrush(QColor(255, 255, 255, 200));
 
 

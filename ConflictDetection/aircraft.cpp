@@ -1,6 +1,6 @@
 #include "aircraft.h"
 
-Aircraft::Aircraft(std::string id, AircraftPath path, IAircraftObserver* observer, std::string entryMoment,
+Aircraft::Aircraft(std::string id, AircraftPath path, IAircraftObserver* observer, long long entryMoment,
                    int aircraftListIndex, int timerTickValue) :
     m_Path(path),
     m_ActivePathStartPoint(path.getPath()[0]),
@@ -10,7 +10,7 @@ Aircraft::Aircraft(std::string id, AircraftPath path, IAircraftObserver* observe
     m_EntryMoment = entryMoment;
     m_TimerTickValue = timerTickValue;
     m_Image = QPixmap(":/resources/img/aircraft2.png");
-    m_DataCardRect = QRectF(5, -20, 36, 12);
+    m_DataCardRect = QRectF(5, -20, 36, 10);
 
     m_AircraftObservers.push_back(observer);
     m_AircraftListIndex = aircraftListIndex;
@@ -37,13 +37,13 @@ void Aircraft::initGraphicsItems() {
 }
 
 const QString& Aircraft::getTextForDataCard() {
-    m_TextForDataCard = QString::fromStdString("  " + m_Id) +
-                        QString::fromStdString("  " + m_EntryMoment) + QString("\n") +
+    m_TextForDataCard = QString::fromStdString("  " + m_Id + ";") + QString(" T: ") +
+                        QString::number(m_EntryMoment) + QString(" с;\n") +
                         QString("  x: " + QString::number(std::round(-m_Y_inMeters)) + "; " +
                                 " z: " + QString::number(std::round(m_X_inMeters)) + "; " +
                                 " y: " + QString::number(std::round(m_Z_inMeters)) + "; " + QString("\n") +
-                        QString("  V: ") + QString::number(m_Velocity) + " м/с  ") +
-                        QString::number(std::round(m_Tau_min)) + QString(" м;");
+                        QString("  V: ") + QString::number(m_Velocity) + " м/с;  ") +
+                        QString("R: ") + QString::number(std::round(m_R_min)) + QString(" м;");
 
     return m_TextForDataCard;
 }
@@ -146,6 +146,10 @@ QPolygon& Aircraft::getShifted_IPSZ_Rectangle() {
 
 double Aircraft::getHorizontalAngle() const {
     return m_AngleHor;
+}
+
+void Aircraft::set_R_min(double value) {
+    m_R_min = value;
 }
 
 void Aircraft::calculateHorAngle() {
@@ -306,11 +310,9 @@ void Aircraft::conflictDetection() {
 
         // Base variables calculation.
         double delta_X = potDangerousAircraft.x_inMeters() - x_inMeters();
-        // Домножение на -1 нужно, так как в формуле ось Y (которая там X) направлена вверх.
-        double delta_Y = /*(-1) * */(potDangerousAircraft.y_inMeters() - y_inMeters());
+        double delta_Y = potDangerousAircraft.y_inMeters() - y_inMeters();
         double delta_Z = potDangerousAircraft.z_inMeters() - z_inMeters();
 
-        // Вопрос про знаки дельт по скоростям: они должны браться со знаками или без?
         double delta_Vx = potDangerousAircraft.getVelocityX() - m_VelocityX;
         double delta_Vy = potDangerousAircraft.getVelocityY() - m_VelocityY;
         double delta_Vz = potDangerousAircraft.getVelocityZ() - m_VelocityZ;
@@ -342,7 +344,6 @@ void Aircraft::conflictDetection() {
                                      (std::pow(delta_Vx, 2) + std::pow(delta_Vy, 2) + std::pow(delta_Vz, 2));
             m_Tau_min = tau_min;
 
-            // Возможно дело в знаках скоростей по осям
             double thisX_tau_min = m_X_inMeters + m_VelocityX * tau_min;
             double thisY_tau_min = m_Y_inMeters + m_VelocityY * tau_min;
             double thisZ_tau_min = m_Z_inMeters + m_VelocityZ * tau_min;
@@ -354,6 +355,9 @@ void Aircraft::conflictDetection() {
             double delta_X_tau_min = x_tau_min - thisX_tau_min;
             double delta_Y_tau_min = y_tau_min - thisY_tau_min;
             double delta_Z_tau_min = z_tau_min - thisZ_tau_min;
+
+            m_R_min = getHorDistBtwAircrafts(delta_X_tau_min, delta_Y_tau_min);
+            potDangerousAircraft.set_R_min(m_R_min);
 
             // Check bounds violation
             if (isSeparationStandardsViolated(delta_X_tau_min, delta_Y_tau_min, delta_Z_tau_min)) {
@@ -370,10 +374,11 @@ void Aircraft::conflictDetection() {
 }
 
 bool Aircraft::isSeparationStandardsViolated(double delta_X, double delta_Y, double delta_Z) {
-    double horDistance = std::sqrt(std::pow(delta_X, 2) + std::pow(delta_Y, 2));
-    //double temp = horDistance;
-    //qDebug() << "horDistance: " << horDistance;
-    return delta_Z <= m_SeparationStandardV && horDistance <= m_SeparationStandardHor;
+    return delta_Z <= m_SeparationStandardV && getHorDistBtwAircrafts(delta_X, delta_Y) <= m_SeparationStandardHor;
+}
+
+double Aircraft::getHorDistBtwAircrafts(double delta_X, double delta_Y) {
+    return std::sqrt(std::pow(delta_X, 2) + std::pow(delta_Y, 2));
 }
 
 double Aircraft::getDistanceDerivative(double delta_X, double delta_Y, double delta_Z,

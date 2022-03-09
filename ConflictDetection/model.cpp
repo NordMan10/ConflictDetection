@@ -141,31 +141,31 @@ void Model::createAircraft() {
     std::uniform_int_distribution<int> pathDistr(0, m_AircraftPaths.size() - 1);
     std::uniform_int_distribution<int> intervalDistr(m_TimerACTickValueMin, m_TimerACTickValueMax);
 
-    int pathIndex = pathDistr(eng);
+    //int pathIndex = pathDistr(eng);
 //    m_Aircrafts.push_back(new Aircraft(getAircraftId(pathIndex).toStdString(), m_AircraftPaths[pathIndex], this,
 //                                       QTime::fromMSecsSinceStartOfDay(getStopwatchValue()).toString().toStdString(),
 //                                       (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
 
     m_Aircrafts.push_back(new Aircraft(getAircraftId(0).toStdString(), m_AircraftPaths[0], this,
-                                       QTime::fromMSecsSinceStartOfDay(getStopwatchValue()).toString().toStdString(),
+                                       getStopwatchValue(),
                                        (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
 
     registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
 
     m_Aircrafts.push_back(new Aircraft(getAircraftId(1).toStdString(), m_AircraftPaths[1], this,
-                           QTime::fromMSecsSinceStartOfDay(getStopwatchValue()).toString().toStdString(),
+                                        getStopwatchValue(),
                                        (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
 
     registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
 
     m_Aircrafts.push_back(new Aircraft(getAircraftId(2).toStdString(), m_AircraftPaths[2], this,
-                                       QTime::fromMSecsSinceStartOfDay(getStopwatchValue()).toString().toStdString(),
+                                       getStopwatchValue(),
                                        (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
 
     registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
 
     m_Aircrafts.push_back(new Aircraft(getAircraftId(4).toStdString(), m_AircraftPaths[4], this,
-                           QTime::fromMSecsSinceStartOfDay(getStopwatchValue()).toString().toStdString(),
+                           getStopwatchValue(),
                                        (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
 
     registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);

@@ -18,7 +18,7 @@
 class Aircraft : public IAircraftTimerObserver
 {
 public:
-    Aircraft(std::string id, AircraftPath path, IAircraftObserver* observer, std::string entryMoment,
+    Aircraft(std::string id, AircraftPath path, IAircraftObserver* observer, long long entryMoment,
              int aircraftListIndex, int timerTickValue);
 
     std::string getId() const;
@@ -80,6 +80,8 @@ public:
     bool isZoneIntersects() const;
     void setIsZoneIntersects(bool value);
 
+    void set_R_min(double value);
+
 private:
     void initGraphicsItems();
 
@@ -109,7 +111,7 @@ private:
     void create_ISZ_Rectangle();
     void create_IPSZ_Rectangle();
 
-    //QPolygon& getShifted_IPSZ_Rectangle();
+    double getHorDistBtwAircrafts(double delta_X, double delta_Y);
 
 private:
     std::vector<IAircraftObserver*> m_AircraftObservers;
@@ -133,7 +135,7 @@ private:
 
     // Момент входа в зону (момент создания ВС) в значении счетчика секундомера.
     // Для вывода нужно конвертировать с помощью QTime::fromMSecsSinceStartOfDay
-    std::string m_EntryMoment;
+    long long m_EntryMoment;
 
     // Скорость в м/с
     double m_Velocity = 275;
@@ -183,7 +185,6 @@ private:
     std::vector<std::reference_wrapper<Aircraft>> m_PotentiallyDangerousAircrafts {};
 
     double m_Tau_min = -1;
-
     double m_R_min = -1;
 
     bool m_IsZoneIntersects = false;

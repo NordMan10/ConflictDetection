@@ -35,11 +35,11 @@ void MainWindow::initViewElements() {
     ui->mainGrid->setRowStretch(1, 4);
 
     ui->topGrid->setMargin(30);
-    ui->topGrid->setColumnStretch(0, 1);
+    ui->topGrid->setColumnStretch(0, 2);
     ui->topGrid->setColumnStretch(1, 0);
-    ui->topGrid->setColumnStretch(2, 1);
-    ui->topGrid->setColumnStretch(3, 10);
-    ui->topGrid->setColumnStretch(4, 2);
+    ui->topGrid->setColumnStretch(2, 2);
+    ui->topGrid->setColumnStretch(3, 5);
+    ui->topGrid->setColumnStretch(4, 5);
 
     m_StartStopBtn = new QPushButton("Start");
     ui->topGrid->addWidget(m_StartStopBtn, 0, 0);
