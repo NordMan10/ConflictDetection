@@ -38,7 +38,7 @@ void Aircraft::initGraphicsItems() {
 
 const QString& Aircraft::getTextForDataCard() {
     m_TextForDataCard = QString::fromStdString("  " + m_Id + ";") + QString(" T: ") +
-                        QString::number(m_EntryMoment) + QString(" с;\n") +
+                        QString::number(m_EntryMoment / 1000) + QString(" с;\n") +
                         QString("  x: " + QString::number(std::round(-m_Y_inMeters)) + "; " +
                                 " z: " + QString::number(std::round(m_X_inMeters)) + "; " +
                                 " y: " + QString::number(std::round(m_Z_inMeters)) + "; " + QString("\n") +
