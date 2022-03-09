@@ -138,7 +138,7 @@ private:
     long long m_EntryMoment;
 
     // Скорость в м/с
-    double m_Velocity = 275;
+    double m_Velocity = 2750;
 
     // Размеры ИЗБ по высоте, ширине и длине, в метрах (это +-).
     int m_ISZ_Height = 300;

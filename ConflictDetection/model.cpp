@@ -97,7 +97,8 @@ void Model::registerAircraftTimerObserver(IAircraftTimerObserver* observer) {
 }
 
 void Model::removeAircraftTimerObserver(IAircraftTimerObserver* observer) {
-    m_AircraftTimerObservers.erase(std::remove(m_AircraftTimerObservers.begin(), m_AircraftTimerObservers.end(), observer), m_AircraftTimerObservers.end());
+    m_AircraftTimerObservers.erase(std::remove(m_AircraftTimerObservers.begin(),
+                                               m_AircraftTimerObservers.end(), observer), m_AircraftTimerObservers.end());
 }
 
 void Model::notifyAircraftTimerObservers() {
@@ -182,7 +183,7 @@ void Model::updateAircraftData(std::string aircraftId) {
         std::vector<int> indices;
         for (int i = 0; i < m_AircraftIdsToRemove.size(); i++) {
             removeAircraftTimerObserver(getAircraftById(m_AircraftIdsToRemove[i]));
-            std::remove(m_Aircrafts.begin(), m_Aircrafts.end(), getAircraftById(m_AircraftIdsToRemove[i]));
+            m_Aircrafts.erase(std::remove(m_Aircrafts.begin(), m_Aircrafts.end(), getAircraftById(m_AircraftIdsToRemove[i])), m_Aircrafts.end());
 
             indices.push_back(i);
         }
