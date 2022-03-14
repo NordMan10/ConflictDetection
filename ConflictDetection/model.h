@@ -94,11 +94,14 @@ private:
 
     QTimer* m_TimerAircraftsCreation;
     int m_TimerAircraftsCreationTickValue = 15000;
-    int m_TimerACTickValueMin = 20000;
+    int m_TimerACTickValueMin = 25000;
     int m_TimerACTickValueMax = 30000;
 
     std::vector<std::string> m_AircraftIdsToRemove;
     bool m_CanRemoveAircraft = false;
+
+    std::random_device m_rd;
+    std::mt19937 m_eng;
 };
 
 #endif // MODEL_H

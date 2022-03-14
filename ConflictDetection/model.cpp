@@ -10,7 +10,9 @@ Model::Model() :
     QObject::connect(m_TimerAircraftsMotion, &QTimer::timeout, this, &Model::notifyAircraftTimerObservers);
 
     m_TimerAircraftsCreation = new QTimer();
-    //QObject::connect(m_TimerAircraftsCreation, &QTimer::timeout, this, &Model::createAircraft);
+    QObject::connect(m_TimerAircraftsCreation, &QTimer::timeout, this, &Model::createAircraft);
+
+    m_eng(m_rd());
 }
 
 
@@ -148,43 +150,48 @@ void Model::registerAircraftsObserver(IAircraftObserver* observer) {
 // В конструкторе идет привязка таймера и вызова этого метода
 void Model::createAircraft() {
     // Если нужна генерация самолетов через случайное значение в интервале, то раскомментируй в этом методе все,
-    // что закомментировано, и закомментируй все, что сейчас раскомментировано.
-//    std::random_device rd;
-//    std::mt19937 eng(rd());
-//    std::uniform_int_distribution<int> pathDistr(0, m_AircraftPaths.size() - 1);
-//    std::uniform_int_distribution<int> intervalDistr(m_TimerACTickValueMin, m_TimerACTickValueMax);
+    // что закомментировано, и закомментируй все, что сейчас раскомментировано, а также в конструкторе
+    // раскомментируй строку соединения сработки метода таймера timeout и этого метода
 
-//    int pathIndex = pathDistr(eng);
-//    m_Aircrafts.push_back(new Aircraft(getAircraftId(pathIndex).toStdString(), m_AircraftPaths[pathIndex], this,
-//                                       getStopwatchValue(), (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
+    std::uniform_int_distribution<int> pathDistr(0, m_AircraftPaths.size() - 1);
+    qDebug() << m_AircraftPaths.size();
+
+    std::uniform_int_distribution<int> intervalDistr(m_TimerACTickValueMin, m_TimerACTickValueMax);
+
+    int pathIndex = pathDistr(eng);
+    qDebug() << pathIndex;
+    m_Aircrafts.push_back(new Aircraft(getAircraftId(pathIndex).toStdString(), m_AircraftPaths[pathIndex], this,
+                                       getStopwatchValue(), (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
+
+    registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
+
+//    m_Aircrafts.push_back(new Aircraft(getAircraftId(0).toStdString(), m_AircraftPaths[0], this,
+//                                       getStopwatchValue(),
+//                                       (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
 
 //    registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
 
-    m_Aircrafts.push_back(new Aircraft(getAircraftId(0).toStdString(), m_AircraftPaths[0], this,
-                                       getStopwatchValue(),
-                                       (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
+//    m_Aircrafts.push_back(new Aircraft(getAircraftId(1).toStdString(), m_AircraftPaths[1], this,
+//                                        getStopwatchValue(),
+//                                       (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
 
-    registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
+//    registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
 
-    m_Aircrafts.push_back(new Aircraft(getAircraftId(1).toStdString(), m_AircraftPaths[1], this,
-                                        getStopwatchValue(),
-                                       (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
+//    m_Aircrafts.push_back(new Aircraft(getAircraftId(2).toStdString(), m_AircraftPaths[2], this,
+//                                       getStopwatchValue(),
+//                                       (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
 
-    registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
+//    registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
 
-    m_Aircrafts.push_back(new Aircraft(getAircraftId(2).toStdString(), m_AircraftPaths[2], this,
-                                       getStopwatchValue(),
-                                       (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
+//    m_Aircrafts.push_back(new Aircraft(getAircraftId(4).toStdString(), m_AircraftPaths[4], this,
+//                           getStopwatchValue(),
+//                                       (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
 
-    registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
+//    registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
 
-    m_Aircrafts.push_back(new Aircraft(getAircraftId(4).toStdString(), m_AircraftPaths[4], this,
-                           getStopwatchValue(),
-                                       (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
-
-    registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
-
-//    m_TimerAircraftsCreation->setInterval(intervalDistr(eng));
+    auto temp = intervalDistr(eng);
+    qDebug() << temp;
+    m_TimerAircraftsCreation->setInterval(temp);
 }
 
 // Этот метод являетя частью интерфейса Наблюдатель
