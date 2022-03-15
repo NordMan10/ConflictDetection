@@ -10,9 +10,9 @@ Model::Model() :
     QObject::connect(m_TimerAircraftsMotion, &QTimer::timeout, this, &Model::notifyAircraftTimerObservers);
 
     m_TimerAircraftsCreation = new QTimer();
-    QObject::connect(m_TimerAircraftsCreation, &QTimer::timeout, this, &Model::createAircraft);
+    //QObject::connect(m_TimerAircraftsCreation, &QTimer::timeout, this, &Model::createAircraft);
 
-    m_eng(m_rd());
+    srand((unsigned)time(0));
 }
 
 
@@ -95,6 +95,10 @@ long long Model::getStopwatchValue() {
     return m_StopwatchValue;
 }
 
+int Model::getRandomInt(int min, int max) {
+    return min + (max - min) * ((double)rand() / (double)RAND_MAX);
+}
+
 void Model::updateStopwatchValue(int value) {
     m_StopwatchValue += value;
 }
@@ -113,7 +117,7 @@ void Model::removeAircraftTimerObserver(IAircraftTimerObserver* observer) {
 }
 
 void Model::notifyAircraftTimerObservers() {
-    for (int i = 0; i < m_AircraftTimerObservers.size(); i++) {
+    for (size_t i = 0; i < m_AircraftTimerObservers.size(); i++) {
         m_AircraftTimerObservers[i]->updateData(m_TimerAircraftsMotionTickValue);
     }
 
@@ -127,8 +131,8 @@ void Model::notifyAircraftTimerObservers() {
 
 void Model::checkPotentiallyDangerousAircrafts() {
     m_CanRemoveAircraft = false;
-    for (int i = 0; i < m_Aircrafts.size() - 1; i++) {
-        for (int j = i + 1; j < m_Aircrafts.size(); j++) {
+    for (size_t i = 0; i < m_Aircrafts.size() - 1; i++) {
+        for (size_t j = i + 1; j < m_Aircrafts.size(); j++) {
             auto potDangerousAircrafts = m_Aircrafts[i]->getPotentiallyDangerousAircrafts();
             if (m_Aircrafts[i]->isAircraftPotentiallyDangerous(*m_Aircrafts[j]) &&
                     !(m_Aircrafts[i]->contains(potDangerousAircrafts, *m_Aircrafts[j])))
@@ -153,45 +157,38 @@ void Model::createAircraft() {
     // что закомментировано, и закомментируй все, что сейчас раскомментировано, а также в конструкторе
     // раскомментируй строку соединения сработки метода таймера timeout и этого метода
 
-    std::uniform_int_distribution<int> pathDistr(0, m_AircraftPaths.size() - 1);
-    qDebug() << m_AircraftPaths.size();
+//    int pathIndex = getRandomInt(0, m_AircraftPaths.size());
 
-    std::uniform_int_distribution<int> intervalDistr(m_TimerACTickValueMin, m_TimerACTickValueMax);
+//    m_Aircrafts.push_back(new Aircraft(getAircraftId(pathIndex).toStdString(), m_AircraftPaths[pathIndex], this,
+//                                       getStopwatchValue(), (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
 
-    int pathIndex = pathDistr(eng);
-    qDebug() << pathIndex;
-    m_Aircrafts.push_back(new Aircraft(getAircraftId(pathIndex).toStdString(), m_AircraftPaths[pathIndex], this,
-                                       getStopwatchValue(), (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
+//    registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
+
+    m_Aircrafts.push_back(new Aircraft(getAircraftId(0).toStdString(), m_AircraftPaths[0], this,
+                                       getStopwatchValue(),
+                                       (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
 
     registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
 
-//    m_Aircrafts.push_back(new Aircraft(getAircraftId(0).toStdString(), m_AircraftPaths[0], this,
-//                                       getStopwatchValue(),
-//                                       (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
+    m_Aircrafts.push_back(new Aircraft(getAircraftId(1).toStdString(), m_AircraftPaths[1], this,
+                                        getStopwatchValue(),
+                                       (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
 
-//    registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
+    registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
 
-//    m_Aircrafts.push_back(new Aircraft(getAircraftId(1).toStdString(), m_AircraftPaths[1], this,
-//                                        getStopwatchValue(),
-//                                       (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
+    m_Aircrafts.push_back(new Aircraft(getAircraftId(2).toStdString(), m_AircraftPaths[2], this,
+                                       getStopwatchValue(),
+                                       (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
 
-//    registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
+    registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
 
-//    m_Aircrafts.push_back(new Aircraft(getAircraftId(2).toStdString(), m_AircraftPaths[2], this,
-//                                       getStopwatchValue(),
-//                                       (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
+    m_Aircrafts.push_back(new Aircraft(getAircraftId(4).toStdString(), m_AircraftPaths[4], this,
+                           getStopwatchValue(),
+                                       (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
 
-//    registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
+    registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
 
-//    m_Aircrafts.push_back(new Aircraft(getAircraftId(4).toStdString(), m_AircraftPaths[4], this,
-//                           getStopwatchValue(),
-//                                       (int)m_Aircrafts.size(), m_TimerAircraftsMotionTickValue));
-
-//    registerAircraftTimerObserver(m_Aircrafts[m_Aircrafts.size() - 1]);
-
-    auto temp = intervalDistr(eng);
-    qDebug() << temp;
-    m_TimerAircraftsCreation->setInterval(temp);
+//    m_TimerAircraftsCreation->setInterval(getRandomInt(m_TimerACTickValueMin, m_TimerACTickValueMax));
 }
 
 // Этот метод являетя частью интерфейса Наблюдатель
@@ -199,21 +196,21 @@ void Model::updateAircraftData(std::string aircraftId) {
     m_AircraftIdsToRemove.push_back(aircraftId);
     if (m_CanRemoveAircraft) {
         std::vector<int> indices;
-        for (int i = 0; i < m_AircraftIdsToRemove.size(); i++) {
+        for (size_t i = 0; i < m_AircraftIdsToRemove.size(); i++) {
             removeAircraftTimerObserver(getAircraftById(m_AircraftIdsToRemove[i]));
             m_Aircrafts.erase(std::remove(m_Aircrafts.begin(), m_Aircrafts.end(), getAircraftById(m_AircraftIdsToRemove[i])), m_Aircrafts.end());
 
             indices.push_back(i);
         }
 
-        for (int i = 0; i < indices.size(); i++) {
+        for (size_t i = 0; i < indices.size(); i++) {
             m_AircraftIdsToRemove.erase(m_AircraftIdsToRemove.begin() + i);
         }
     }
 }
 
 Aircraft* Model::getAircraftById(std::string aircraftId) {
-    for (int i = 0; i < m_Aircrafts.size(); i++) {
+    for (size_t i = 0; i < m_Aircrafts.size(); i++) {
         if (m_Aircrafts[i]->getId() == aircraftId) {
             return m_Aircrafts[i];
         }

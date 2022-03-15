@@ -71,6 +71,8 @@ private:
 
     Aircraft* getAircraftById(std::string aircraftId);
 
+    int getRandomInt(int min, int max);
+
 private:
     std::vector<CDPoint> m_ZonePoints;
     std::vector<CDPoint> m_PathPoints;
@@ -99,9 +101,6 @@ private:
 
     std::vector<std::string> m_AircraftIdsToRemove;
     bool m_CanRemoveAircraft = false;
-
-    std::random_device m_rd;
-    std::mt19937 m_eng;
 };
 
 #endif // MODEL_H
